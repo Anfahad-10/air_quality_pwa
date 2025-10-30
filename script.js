@@ -13,9 +13,11 @@ if ('serviceWorker' in navigator) {
           } else {
             console.log('User IS NOT subscribed.');
           }
+          
         });
       })
       .catch(err => console.error('Service Worker registration failed:', err));
+      setupModernDropdown(); 
   });
 }
 
@@ -39,6 +41,7 @@ function handleLocationSuccess(position) {
   fetchAirQualityFromServer(currentLocation);
 
   handleSubscription();
+  document.getElementById('result-container').scrollIntoView({ behavior: 'smooth' });
 }
 
 function handleSubscription() {
@@ -85,20 +88,81 @@ function fetchAirQualityFromServer(location) {
   const serverUrl = `http://localhost:3000/air-quality?lat=${location.latitude}&lon=${location.longitude}`;
   fetch(serverUrl)
     .then(response => response.json())
-    .then(data => {
-      if (data.list && data.list.length > 0) {
-        const aqi = data.list[0].main.aqi;
-        document.getElementById('aqi-value').textContent = aqi;
-        document.getElementById('aqi-meaning').textContent = getAqiMeaning(aqi);
-      }
-    })
+    // script.js ... inside fetchAirQualityFromServer
+
+.then(data => {
+  if (data.list && data.list.length > 0) {
+    const aqiData = data.list[0];
+    const aqi = aqiData.main.aqi;
+    const components = aqiData.components;
+
+    const meaning = getAqiMeaning(aqi);
+    const rotationAngle = getAqiRotation(aqi);
+    const recommendation = getRecommendations(aqi);
+    const colorClass = getAqiColorClass(aqi);
+    const resultContainer = document.getElementById('result-container');
+
+    // --- Update Gauge ---
+    document.getElementById('aqi-value').textContent = aqi;
+    document.getElementById('aqi-meaning').textContent = meaning;
+    document.getElementById('gauge-needle').style.transform = `translateX(-80px) rotate(${rotationAngle}deg)`;
+
+    // --- NEW: Populate Pollutant Data ---
+    const pollutantContainer = document.getElementById('pollutant-data-container');
+    pollutantContainer.innerHTML = `
+      <div class="pollutant-item">
+        <div class="name">PM2.5</div>
+        <div class="value">${components.pm2_5} <span>µg/m³</span></div>
+      </div>
+      <div class="pollutant-item">
+        <div class="name">PM10</div>
+        <div class="value">${components.pm10} <span>µg/m³</span></div>
+      </div>
+      <div class="pollutant-item">
+        <div class="name">SO₂</div>
+        <div class="value">${components.so2} <span>µg/m³</span></div>
+      </div>
+      <div class="pollutant-item">
+        <div class="name">NO₂</div>
+        <div class="value">${components.no2} <span>µg/m³</span></div>
+      </div>
+    `;
+
+    document.getElementById('recommendations-text').textContent = recommendation;
+    resultContainer.className = '';
+    resultContainer.classList.add(colorClass);
+    
+  } else {
+    throw new Error('API data format is incorrect.');
+  }
+})
     .catch(error => console.error('Error fetching AQI from server:', error));
 }
+
+
+function getAqiRotation(aqi) {
+  const minAngle = 0;
+  const maxAngle = 180;
+  
+  const aqiMin = 1;
+  const aqiMax = 5;
+  
+  const anglePerAqiUnit = maxAngle / (aqiMax - aqiMin);
+  
+  const adjustedAqi = aqi - aqiMin;
+  
+  const angle = (adjustedAqi * anglePerAqiUnit) + (anglePerAqiUnit / 2);
+
+  return Math.min(maxAngle, Math.max(minAngle, angle));
+}
+
+
 
 function sendSubscriptionToServer(subscription, location) {
   console.log('Sending subscription and location to server...');
   
-  const frequency = document.getElementById('frequency-select').value;
+  const dropdown = document.getElementById('frequency-dropdown');
+  const frequency = dropdown.dataset.selectedValue || '28800000';
   console.log(`With selected frequency: ${frequency}ms`);
 
   fetch('http://localhost:3000/subscribe', {
@@ -111,14 +175,28 @@ function sendSubscriptionToServer(subscription, location) {
   .catch(err => console.error('Error sending data to server:', err));
 }
 
+
+function getAqiColorClass(aqi) {
+  switch (aqi) {
+    case 1: return 'aqi-good';
+    case 2: return 'aqi-fair';
+    case 3: return 'aqi-moderate';
+    case 4: return 'aqi-poor';
+    case 5: return 'aqi-very-poor';
+    default: return ''; // Default gray
+  }
+}
+
+
+
 function getAqiMeaning(aqi) {
   switch (aqi) {
-    case 1: return 'Good, Enjoy Brother 😍';
-    case 2: return 'Fair, Have Fun 👍';
-    case 3: return 'Moderate, Be Aware 😊';
-    case 4: return 'Poor, Mask UP Brother 😷';
-    case 5: return 'Very Poor, RUN 🏃‍♂️‍➡️ and VOTE OUT Govt 🪧';
-    default: return 'Unknown';
+    case 1: return 'Good 😍';
+    case 2: return 'Fair 👍';
+    case 3: return 'Moderate 😊';
+    case 4: return 'Poor 😷';
+    case 5: return 'Very Poor, RUN 🏃‍♂️‍➡️';
+    default: return 'Unknown 💀';
   }
 }
 function showError(error) { console.error('Error getting location:', error.message); }
@@ -129,4 +207,38 @@ function urlBase64ToUint8Array(base64String) {
   const outputArray = new Uint8Array(rawData.length);
   for (let i = 0; i < rawData.length; ++i) { outputArray[i] = rawData.charCodeAt(i); }
   return outputArray;
+}
+
+function getRecommendations(aqi) {
+  switch (aqi) {
+    case 1: return 'It’s a great day to be active outside. Enjoy the fresh air!';
+    case 2: return 'Air quality is acceptable. Unusually sensitive individuals should consider reducing prolonged or heavy exertion.';
+    case 3: return 'Sensitive groups may experience health effects. The general public is less likely to be affected. Limit prolonged outdoor exertion.';
+    case 4: return 'Everyone may begin to experience health effects. Members of sensitive groups may experience more serious health effects. Avoid prolonged outdoor exertion.';
+    case 5: return 'This is a health alert. Everyone is likely to be affected. Everyone should avoid all outdoor exertion.';
+    default: return 'Check the air quality to see recommendations.';
+  }
+}
+
+
+
+
+function setupModernDropdown() {
+  const dropdown = document.getElementById('frequency-dropdown');
+  const dropdownText = document.getElementById('dropdown-text');
+  const dropdownCheckbox = document.getElementById('dropdown-checkbox');
+  const dropdownItems = document.querySelectorAll('.dropdown__items li');
+
+  dropdownItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const newText = item.textContent;
+      const newValue = item.dataset.value;
+
+      dropdownText.textContent = newText;
+
+      dropdown.dataset.selectedValue = newValue;
+
+      dropdownCheckbox.checked = false;
+    });
+  });
 }

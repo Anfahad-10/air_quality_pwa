@@ -96,7 +96,7 @@ async function masterCheckAndNotify() {
       const { subscription, location, frequency, lastCheckedTimestamp } = userData;
 
       const lastChecked = lastCheckedTimestamp.toDate();
-      const timeSinceLastCheck = now - lastChecked; // This is in milliseconds
+      const timeSinceLastCheck = now - lastChecked; 
 
       console.log(`Checking user ${doc.id}. Time since last check: ${timeSinceLastCheck}ms. Frequency: ${frequency}ms.`);
 
@@ -156,11 +156,11 @@ cron.schedule('*/5 * * * *', () => {
 
 function getAqiMeaning(aqi) {
   switch (aqi) {
-    case 1: return 'Good, Enjoy Brother 😍';
-    case 2: return 'Fair, Have Fun 👍';
-    case 3: return 'Moderate, Be Aware 😊';
-    case 4: return 'Poor, Mask UP Brother 😷';
-    case 5: return 'Very Poor, RUN 🏃‍♂️‍➡️ and VOTE OUT Govt 🪧';
+    case 1: return 'Good 😍';
+    case 2: return 'Fair 👍';
+    case 3: return 'Moderate 😊';
+    case 4: return 'Poor 😷';
+    case 5: return 'Very Poor, RUN 🏃‍♂️‍➡️';
     default: return 'Unknown 💀';
   }
 }

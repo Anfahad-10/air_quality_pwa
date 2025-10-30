@@ -5,29 +5,67 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Air Quality App</title>
   <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-  <h1>Air Quality Checker</h1>
-  <button id="check-btn">Check My Air Quality</button>
+  <div class="app-container">
+    
+    <h1>Air Quality Checker</h1>
+    
+    <button id="check-btn">Check My Air Quality</button>
+    
+    <div id="settings-container">
+  <h3>Notification Frequency</h3>
+  
+  <div class="dropdown" id="frequency-dropdown">
+    <input type="checkbox" id="dropdown-checkbox">
 
-  <div id="settings-container">
-    <h3>Update Notification Frequency</h3>
-    <select id="frequency-select">
-      <option value="3600000">Every hour</option>
-      <option value="10800000">Every 3 hours</option>
-      <option value="28800000" selected>Every 8 hours (Default)</option>
-      <option value="86400000">Once a day</option>
-    </select>
+    <label class="dropdown__face" for="dropdown-checkbox">
+      <div class="dropdown__text" id="dropdown-text">Every 8 hours (Default)</div>
+      <div class="dropdown__arrow"></div>
+    </label>
+
+    <ul class="dropdown__items">
+      <li data-value="3600000">Every hour</li>
+      <li data-value="10800000">Every 3 hours</li>
+      <li data-value="28800000">Every 8 hours</li>
+      <li data-value="86400000">Once a day</li>
+    </ul>
+  </div>
+</div>
+
+<svg style="display: none;">
+  <filter id="goo">
+    <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+    <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
+    <feBlend in="SourceGraphic" in2="goo" />
+  </filter>
+</svg>
+    
+    <div id="result-container">
+  <h2>Air Quality Index (AQI)</h2>
+
+  <div class="gauge-container">
+    <div class="gauge-body">
+      <div class="gauge-arc"></div>
+      <div class="gauge-needle" id="gauge-needle"></div>
+      <div class="gauge-center" id="aqi-value">--</div>
+    </div>
   </div>
 
+  <p id="aqi-meaning">Awaiting measurement...</p>
 
-
-  <div id="result-container">
-    <h2>Air Quality Index (AQI):</h2>
-    <p id="aqi-value">--</p>
-    <p id="aqi-meaning"></p>
+  <div id="pollutant-data-container">
   </div>
 
+  <div id="recommendations-box">
+    <h3>Recommendations</h3>
+    <p id="recommendations-text">Check the air quality to see recommendations.</p>
+  </div>
+</div>
+  
   <script src="script.js"></script>
 </body>
+
 </html>
