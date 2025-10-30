@@ -1,20 +1,23 @@
 {
-  "name": "Air Quality Notifier",
-  "short_name": "AQI Notify",
-  "start_url": "index.html",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#007bff",
-  "icons": [
+  "version": 2,
+  "builds": [
     {
-      "src": "icon-192.png",
-      "type": "image/png",
-      "sizes": "192x192"
+      "src": "server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/air-quality",
+      "dest": "/server.js"
     },
     {
-      "src": "icon-512.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "src": "/subscribe",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/$1"
     }
   ]
 }
