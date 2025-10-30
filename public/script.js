@@ -85,7 +85,7 @@ async function subscribeUserToPush() {
 }
 
 function fetchAirQualityFromServer(location) {
-  const serverUrl = `https://breathquality.vercel.app/air-quality?lat=${location.latitude}&lon=${location.longitude}`;
+  const serverUrl = `/air-quality?lat=${location.latitude}&lon=${location.longitude}`;
   fetch(serverUrl)
     .then(response => response.json())
     // script.js ... inside fetchAirQualityFromServer
@@ -165,7 +165,7 @@ function sendSubscriptionToServer(subscription, location) {
   const frequency = dropdown.dataset.selectedValue || '28800000';
   console.log(`With selected frequency: ${frequency}ms`);
 
-  fetch('https://breathquality.vercel.app/subscribe', {
+  fetch('/subscribe', {
     method: 'POST',
     body: JSON.stringify({ subscription, location, frequency }),
     headers: { 'Content-Type': 'application/json' }
