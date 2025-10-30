@@ -51,14 +51,22 @@ app.get('/air-quality', async (req, res) => {
       }
 });
 
+
+
 app.post('/subscribe', async (req, res) => {
   try {
-    const subscription = req.body;
-    console.log('Received new subscription:', subscription);
+    const { subscription, location } = req.body; 
+    console.log('Received new subscription with location:', subscription.endpoint);
+    console.log('Location:', location);
 
-    await db.collection('subscriptions').add(subscription);
+    const docId = encodeURIComponent(subscription.endpoint);
+
+    await db.collection('subscriptions').doc(docId).set({
+      subscription: subscription,
+      location: location
+    });
     
-    res.status(201).json({ message: 'Subscription saved to Firestore.' });
+    res.status(201).json({ message: 'Subscription and location saved.' });
   } catch (error) {
     console.error("Error saving subscription:", error);
     res.status(500).json({ error: 'Failed to save subscription.' });
@@ -68,30 +76,61 @@ app.post('/subscribe', async (req, res) => {
 
 
 
-app.post('/send-test-notification', async (req, res) => {
-  console.log('Attempting to send a test notification...');
+
+async function checkAirQualityAndNotify() {
+  console.log('Running scheduled check: Fetching all subscriptions...');
   try {
-    const snapshot = await db.collection('subscriptions').limit(1).get();
+    const snapshot = await db.collection('subscriptions').get();
     if (snapshot.empty) {
-      console.log('No subscriptions to notify.');
-      return res.status(404).json({ error: 'No subscriptions found.' });
+      console.log('No subscriptions to process.');
+      return;
     }
-    const subscription = snapshot.docs[0].data();
 
-    const payload = JSON.stringify({
-      title: 'Hello from the Server! 👋',
-      body: 'This is your first push notification.'
+    snapshot.forEach(async (doc) => {
+      //const subscription = doc.data();
+      
+      const { subscription, location } = doc.data();
+
+      console.log(`Checking AQI for subscription:`, subscription.endpoint);
+
+      const apiKey = process.env.API_KEY;
+      const apiUrl = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${location.latitude}&lon=${location.longitude}&appid=${apiKey}`;
+      const apiResponse = await fetch(apiUrl);
+      const data = await apiResponse.json();
+      
+      if (data.list && data.list.length > 0) {
+        const aqi = data.list[0].main.aqi;
+        console.log(`AQI is ${aqi}`);
+
+        if (aqi >= 3) { 
+          const payload = JSON.stringify({
+            title: 'Air Quality Alert! 💨',
+            body: `The AQI in your area is now ${aqi} (${getAqiMeaning(aqi)}). Please take precautions.`
+          });
+
+          console.log('AQI is poor, sending notification...');
+          await webpush.sendNotification(subscription, payload);
+          console.log('Notification sent successfully.');
+        } else {
+          console.log('AQI is good, no notification needed.');
+        }
+      }
     });
-
-    await webpush.sendNotification(subscription, payload);
-    console.log('Test notification sent successfully.');
-    res.status(200).json({ message: 'Notification sent!' });
-
   } catch (error) {
-    console.error('Error sending test notification:', error);
-    res.status(500).json({ error: 'Failed to send notification.' });
+    console.error('Error during scheduled check:', error);
   }
-});
+}
+
+function getAqiMeaning(aqi) {
+  switch (aqi) {
+    case 1: return 'Good, Enjoy Brother 😍';
+    case 2: return 'Fair, Have Fun 👍';
+    case 3: return 'Moderate, Be Aware 😊';
+    case 4: return 'Poor, Mask UP Brother 😷';
+    case 5: return 'Very Poor, RUN 🏃‍♂️‍➡️ and VOTE OUT Govt 🪧';
+    default: return 'Unknown 💀';
+  }
+}
 
 
 
