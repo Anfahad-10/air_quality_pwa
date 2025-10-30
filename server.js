@@ -2,14 +2,11 @@ const express = require('express');
 const cors = require('cors');
 const fetch = require('node-fetch');
 require('dotenv').config();
-const admin = require('firebase-admin'); // <-- KEEP THIS ONE
+const admin = require('firebase-admin'); 
 const cron = require('node-cron');
 const webpush = require('web-push');
 
 
-// This code is smart:
-// On Vercel, it uses the secret environment variable.
-// On your computer, it uses the local file.
 let serviceAccount;
 if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
   serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
@@ -43,6 +40,10 @@ const port = 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.static('.')); 
+
+app.get('/', (req, res) => {
+  res.sendFile('index.html', { root: __dirname });
+});
 
 
 
