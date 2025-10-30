@@ -1,11 +1,11 @@
-const cron = require('node-cron');
 const express = require('express');
 const cors = require('cors');
 const fetch = require('node-fetch');
 require('dotenv').config();
+const admin = require('firebase-admin'); // <-- KEEP THIS ONE
+const cron = require('node-cron');
+const webpush = require('web-push');
 
-const admin = require('firebase-admin');
-const admin = require('firebase-admin');
 
 // This code is smart:
 // On Vercel, it uses the secret environment variable.
@@ -23,8 +23,6 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-
-const webpush = require('web-push');
 
 const vapidPublicKey = process.env.VAPID_PUBLIC_KEY; 
 const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY;
