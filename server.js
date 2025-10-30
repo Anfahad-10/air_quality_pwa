@@ -5,7 +5,17 @@ const fetch = require('node-fetch');
 require('dotenv').config();
 
 const admin = require('firebase-admin');
-const serviceAccount = require('./serviceAccountKey.json');
+const admin = require('firebase-admin');
+
+// This code is smart:
+// On Vercel, it uses the secret environment variable.
+// On your computer, it uses the local file.
+let serviceAccount;
+if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
+  serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
+} else {
+  serviceAccount = require('./serviceAccountKey.json');
+}
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
