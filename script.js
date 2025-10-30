@@ -85,7 +85,7 @@ async function subscribeUserToPush() {
 }
 
 function fetchAirQualityFromServer(location) {
-  const serverUrl = `https://breathquality.vercel.app/air-quality?lat=${latitude}&lon=${longitude}`;
+  const serverUrl = `https://breathquality.vercel.app/air-quality?lat=${location.latitude}&lon=${location.longitude}`;
   fetch(serverUrl)
     .then(response => response.json())
     // script.js ... inside fetchAirQualityFromServer
