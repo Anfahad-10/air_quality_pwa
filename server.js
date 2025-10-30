@@ -54,20 +54,22 @@ app.get('/air-quality', async (req, res) => {
 
 
 
+
 app.post('/subscribe', async (req, res) => {
   try {
-    const { subscription, location } = req.body; 
-    console.log('Received new subscription with location:', subscription.endpoint);
-    console.log('Location:', location);
+    const { subscription, location, frequency } = req.body; 
+    console.log('Received new subscription with location and frequency.');
 
     const docId = encodeURIComponent(subscription.endpoint);
 
     await db.collection('subscriptions').doc(docId).set({
       subscription: subscription,
-      location: location
+      location: location,
+      frequency: parseInt(frequency, 10),
+      lastCheckedTimestamp: new Date() 
     });
     
-    res.status(201).json({ message: 'Subscription and location saved.' });
+    res.status(201).json({ message: 'Subscription, location, and frequency saved.' });
   } catch (error) {
     console.error("Error saving subscription:", error);
     res.status(500).json({ error: 'Failed to save subscription.' });
@@ -78,8 +80,10 @@ app.post('/subscribe', async (req, res) => {
 
 
 
-async function checkAirQualityAndNotify() {
-  console.log('Running scheduled check: Fetching all subscriptions...');
+async function masterCheckAndNotify() {
+  console.log('Master checker running...');
+  const now = new Date();
+
   try {
     const snapshot = await db.collection('subscriptions').get();
     if (snapshot.empty) {
@@ -87,40 +91,68 @@ async function checkAirQualityAndNotify() {
       return;
     }
 
-    snapshot.forEach(async (doc) => {
-      //const subscription = doc.data();
-      
-      const { subscription, location } = doc.data();
+    for (const doc of snapshot.docs) {
+      const userData = doc.data();
+      const { subscription, location, frequency, lastCheckedTimestamp } = userData;
 
-      console.log(`Checking AQI for subscription:`, subscription.endpoint);
+      const lastChecked = lastCheckedTimestamp.toDate();
+      const timeSinceLastCheck = now - lastChecked; // This is in milliseconds
 
-      const apiKey = process.env.API_KEY;
-      const apiUrl = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${location.latitude}&lon=${location.longitude}&appid=${apiKey}`;
-      const apiResponse = await fetch(apiUrl);
-      const data = await apiResponse.json();
-      
-      if (data.list && data.list.length > 0) {
-        const aqi = data.list[0].main.aqi;
-        console.log(`AQI is ${aqi}`);
+      console.log(`Checking user ${doc.id}. Time since last check: ${timeSinceLastCheck}ms. Frequency: ${frequency}ms.`);
 
-        if (aqi >= 3) { 
-          const payload = JSON.stringify({
-            title: 'Air Quality Alert! 💨',
-            body: `The AQI in your area is now ${aqi} (${getAqiMeaning(aqi)}). Please take precautions.`
+      if (timeSinceLastCheck >= frequency) {
+        console.log(`It's time to check for ${doc.id}. Fetching AQI...`);
+
+        const apiKey = process.env.API_KEY;
+        const apiUrl = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${location.latitude}&lon=${location.longitude}&appid=${apiKey}`;
+        
+        try {
+          const apiResponse = await fetch(apiUrl);
+          const data = await apiResponse.json();
+
+          if (data.list && data.list.length > 0) {
+            const aqi = data.list[0].main.aqi; 
+            console.log(`AQI for ${doc.id} is ${aqi}.`);
+
+            if (aqi >= 3) {
+              const payload = JSON.stringify({
+                title: 'Air Quality Alert! 💨',
+                body: `The AQI in your area is now ${aqi} (${getAqiMeaning(aqi)}). Please take precautions.`
+              });
+              await webpush.sendNotification(subscription, payload);
+              console.log(`Notification sent to ${doc.id}.`);
+            }
+          }
+
+          await db.collection('subscriptions').doc(doc.id).update({
+            lastCheckedTimestamp: now
           });
+          console.log(`Updated timestamp for ${doc.id}.`);
 
-          console.log('AQI is poor, sending notification...');
-          await webpush.sendNotification(subscription, payload);
-          console.log('Notification sent successfully.');
-        } else {
-          console.log('AQI is good, no notification needed.');
+        } catch (apiError) {
+          console.error(`Failed to check AQI or notify for ${doc.id}:`, apiError);
+          if (apiError.statusCode === 410) {
+            console.log(`Subscription for ${doc.id} is expired. Deleting from DB.`);
+            await db.collection('subscriptions').doc(doc.id).delete();
+          }
         }
       }
-    });
+    }
+    console.log('Master checker finished.');
+
   } catch (error) {
-    console.error('Error during scheduled check:', error);
+    console.error('Error during master check:', error);
   }
 }
+
+// Set up the cron job to run our master checker.
+// Let's run it every 5 minutes.
+cron.schedule('*/5 * * * *', () => {
+  console.log('---------------------');
+  console.log('Cron job triggered: Running master checker...');
+  masterCheckAndNotify();
+});
+
 
 function getAqiMeaning(aqi) {
   switch (aqi) {
@@ -132,18 +164,6 @@ function getAqiMeaning(aqi) {
     default: return 'Unknown 💀';
   }
 }
-
-
-
-// This cron expression means "at minute 0 of every 8th hour".
-// It will run at 00:00, 08:00, and 16:00 UTC time.
-cron.schedule('0 */8 * * *', () => {
-  console.log('---------------------');
-  console.log('Running the scheduled 8-hour AQI check...');
-  checkAirQualityAndNotify();
-});
-
-
 
 app.listen(port, () => {
   console.log(`Server is running and listening on http://localhost:${port}`);

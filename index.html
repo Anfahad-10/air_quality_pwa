@@ -10,6 +10,18 @@
   <h1>Air Quality Checker</h1>
   <button id="check-btn">Check My Air Quality</button>
 
+  <div id="settings-container">
+    <h3>Update Notification Frequency</h3>
+    <select id="frequency-select">
+      <option value="3600000">Every hour</option>
+      <option value="10800000">Every 3 hours</option>
+      <option value="28800000" selected>Every 8 hours (Default)</option>
+      <option value="86400000">Once a day</option>
+    </select>
+  </div>
+
+
+
   <div id="result-container">
     <h2>Air Quality Index (AQI):</h2>
     <p id="aqi-value">--</p>

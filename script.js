@@ -97,9 +97,13 @@ function fetchAirQualityFromServer(location) {
 
 function sendSubscriptionToServer(subscription, location) {
   console.log('Sending subscription and location to server...');
+  
+  const frequency = document.getElementById('frequency-select').value;
+  console.log(`With selected frequency: ${frequency}ms`);
+
   fetch('http://localhost:3000/subscribe', {
     method: 'POST',
-    body: JSON.stringify({ subscription, location }),
+    body: JSON.stringify({ subscription, location, frequency }),
     headers: { 'Content-Type': 'application/json' }
   })
   .then(res => res.json())
