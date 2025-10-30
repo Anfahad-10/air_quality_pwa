@@ -1,3 +1,4 @@
+const cron = require('node-cron');
 const express = require('express');
 const cors = require('cors');
 const fetch = require('node-fetch');
@@ -134,6 +135,13 @@ function getAqiMeaning(aqi) {
 
 
 
+// This cron expression means "at minute 0 of every 8th hour".
+// It will run at 00:00, 08:00, and 16:00 UTC time.
+cron.schedule('0 */8 * * *', () => {
+  console.log('---------------------');
+  console.log('Running the scheduled 8-hour AQI check...');
+  checkAirQualityAndNotify();
+});
 
 
 
