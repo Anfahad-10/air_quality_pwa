@@ -155,13 +155,27 @@ async function masterCheckAndNotify() {
   }
 }
 
-// Set up the cron job to run our master checker.
-// Let's run it every 5 minutes.
-cron.schedule('*/5 * * * *', () => {
+
+
+
+app.get('/api/cron', (req, res) => {
+  const cronSecret = req.headers['authorization'];
+
+  if (cronSecret !== `Bearer ${process.env.CRON_SECRET}`) {
+    console.log('Unauthorized cron job attempt.');
+    return res.status(401).send('Unauthorized');
+  }
+
   console.log('---------------------');
-  console.log('Cron job triggered: Running master checker...');
+  console.log('Vercel Cron Job triggered: Running master checker...');
+  
   masterCheckAndNotify();
+  
+  res.status(200).send('Cron job executed.');
 });
+
+
+
 
 
 function getAqiMeaning(aqi) {
