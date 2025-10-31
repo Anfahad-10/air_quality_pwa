@@ -4,23 +4,28 @@
     {
       "src": "server.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
-    { "src": "/api/cron", "dest": "/server.js" },
-    { "src": "/air-quality", "dest": "/server.js" },
-    { "src": "/subscribe", "dest": "/server.js" },
-    
-    // This rule serves specific files like style.css, script.js, etc.
-    { "src": "/(.*\\..*)", "dest": "/public/$1" },
-
-    // NEW CATCH-ALL: For any other route, serve the main HTML file.
-    { "src": "/(.*)", "dest": "/public/index.html" }
-  ],
-  "crons": [
     {
-      "path": "/api/cron",
-      "schedule": "0 0 * * *"
+      "src": "/(.*).(css|js|png|ico|json|svg)",
+      "dest": "/public/$1.$2"
+    },
+    {
+      "src": "/air-quality",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/subscribe",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/index.html"
     }
   ]
 }
