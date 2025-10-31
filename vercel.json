@@ -1,7 +1,21 @@
 {
-  "builds": [{ "src": "server.js", "use": "@vercel/node" }],
-  "crons": [{
+  "version": 2,
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    { "src": "/api/cron", "dest": "/server.js" },
+    { "src": "/air-quality", "dest": "/server.js" },
+    { "src": "/subscribe", "dest": "/server.js" },
+    { "src": "/(.*)", "dest": "/public/$1" }
+  ],
+  "crons": [
+    {
       "path": "/api/cron",
-      "schedule": "0 */8 * * *"
-  }]
+      "schedule": "* * * * *"
+    }
+  ]
 }
