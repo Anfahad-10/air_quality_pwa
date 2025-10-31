@@ -12,9 +12,28 @@
 <body>
   <div class="app-container">
     
-    <h1>Air Quality Checker</h1>
+    <div class="title-container">
+      <h1 class="card__title">Air Quality Checker</h1>
+    </div>
+    <p>This is a School Project of <b>AQSA ANWAR</b> made by <b><a href="https://github.com/Anfahad-10"> FAHAD ANWAR</a></b></p>
+    <br>
     
-    <button id="check-btn">Check My Air Quality</button>
+
+    <button class="blob-btn" id="check-btn">
+      Check My Air Quality
+      <span class="blob-btn__inner">
+        <span class="blob-btn__blobs">
+          <span class="blob-btn__blob"></span>
+          <span class="blob-btn__blob"></span>
+          <span class="blob-btn__blob"></span>
+          <span class="blob-btn__blob"></span>
+        </span>
+      </span>
+    </button>
+
+
+
+
     
     <div id="settings-container">
   <h3>Notification Frequency</h3>
@@ -27,6 +46,7 @@
       <div class="dropdown__arrow"></div>
     </label>
 
+    <br>
     <ul class="dropdown__items">
       <li data-value="3600000">Every hour</li>
       <li data-value="10800000">Every 3 hours</li>
@@ -42,6 +62,13 @@
     <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
     <feBlend in="SourceGraphic" in2="goo" />
   </filter>
+
+  <filter id="goo-button">
+    <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="10"></feGaussianBlur>
+    <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 21 -7" result="goo"></feColorMatrix>
+    <feBlend in2="goo" in="SourceGraphic" result="mix"></feBlend>
+  </filter>
+  
 </svg>
     
     <div id="result-container">
