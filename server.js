@@ -1,4 +1,4 @@
-const path = require('path');
+/*const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const fetch = require('node-fetch');
@@ -45,6 +45,131 @@ app.use(express.json());
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.get('/api/cron', (req, res) => {
+  const cronSecret = req.headers['authorization'];
+
+  if (cronSecret !== `Bearer ${process.env.CRON_SECRET}`) {
+    console.log('Unauthorized cron job attempt.');
+    return res.status(401).send('Unauthorized');
+  }
+
+  console.log('---------------------');
+  console.log('Vercel Cron Job triggered: Running master checker...');
+  
+  masterCheckAndNotify();
+  
+  res.status(200).send('Cron job executed.');
+});
+
+
+
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const path = require('path');
+const express = require('express');
+const cors = require('cors');
+const fetch = require('node-fetch');
+require('dotenv').config();
+const admin = require('firebase-admin');
+const webpush = require('web-push');
+// We don't need cron here anymore, it's handled by Vercel's vercel.json
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+// --- Middleware ---
+app.use(cors());
+app.use(express.json());
+
+// --- Serve ALL static files from the 'public' folder ---
+app.use(express.static(path.join(__dirname, 'public')));
+
+// --- Firebase & WebPush Setup ---
+let serviceAccount;
+if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
+  serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
+} else {
+  serviceAccount = require('./serviceAccountKey.json');
+}
+admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+const db = admin.firestore();
+
+webpush.setVapidDetails(
+  `mailto:${process.env.VAPID_EMAIL}`,
+  process.env.VAPID_PUBLIC_KEY,
+  process.env.VAPID_PRIVATE_KEY
+);
+
+// --- API ROUTES ---
 app.get('/air-quality', async (req, res) => {
     try {
         const { lat, lon } = req.query;
@@ -61,8 +186,6 @@ app.get('/air-quality', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch air quality' });
       }
 });
-
-
 
 
 app.post('/subscribe', async (req, res) => {
@@ -87,9 +210,7 @@ app.post('/subscribe', async (req, res) => {
 });
 
 
-
-
-
+// The master checker function
 async function masterCheckAndNotify() {
   console.log('Master checker running...');
   const now = new Date();
@@ -158,26 +279,28 @@ async function masterCheckAndNotify() {
 
 
 
+// The cron job endpoint
 app.get('/api/cron', (req, res) => {
-  const cronSecret = req.headers['authorization'];
-
-  if (cronSecret !== `Bearer ${process.env.CRON_SECRET}`) {
-    console.log('Unauthorized cron job attempt.');
+  if (req.headers['authorization'] !== `Bearer ${process.env.CRON_SECRET}`) {
     return res.status(401).send('Unauthorized');
   }
-
-  console.log('---------------------');
-  console.log('Vercel Cron Job triggered: Running master checker...');
-  
   masterCheckAndNotify();
-  
   res.status(200).send('Cron job executed.');
 });
 
 
+// --- Catch-all to serve index.html ---
+// This handles the case when a user refreshes on a non-existent page
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
 
+// Helper functions (getAqiMeaning, etc.) go here
 function getAqiMeaning(aqi) {
   switch (aqi) {
     case 1: return 'Good 😍';
@@ -188,7 +311,3 @@ function getAqiMeaning(aqi) {
     default: return 'Unknown 💀';
   }
 }
-
-app.listen(port, () => {
-  console.log(`Server is running and listening on http://localhost:${port}`);
-});
