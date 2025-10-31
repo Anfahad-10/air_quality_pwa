@@ -134,7 +134,7 @@ app.get('/api/cron', (req, res) => {
 
 
 
-const path = require('path');
+//  const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const fetch = require('node-fetch');
@@ -151,7 +151,7 @@ app.use(cors());
 app.use(express.json());
 
 // --- Serve ALL static files from the 'public' folder ---
-app.use(express.static(path.join(__dirname, 'public')));
+//  app.use(express.static(path.join(__dirname, 'public')));
 
 // --- Firebase & WebPush Setup ---
 let serviceAccount;
@@ -170,7 +170,7 @@ webpush.setVapidDetails(
 );
 
 // --- API ROUTES ---
-app.get('/air-quality', async (req, res) => {
+app.get('/api/air-quality', async (req, res) => {
     try {
         const { lat, lon } = req.query;
         const apiKey = process.env.API_KEY;
@@ -188,7 +188,7 @@ app.get('/air-quality', async (req, res) => {
 });
 
 
-app.post('/subscribe', async (req, res) => {
+app.post('/api/subscribe', async (req, res) => {
   try {
     const { subscription, location, frequency } = req.body; 
     console.log('Received new subscription with location and frequency.');
@@ -296,9 +296,10 @@ app.get('*', (req, res) => {
 });
 
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+module.exports = app;
+
+
+
 
 // Helper functions (getAqiMeaning, etc.) go here
 function getAqiMeaning(aqi) {
