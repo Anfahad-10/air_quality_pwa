@@ -8,6 +8,9 @@ const cron = require('node-cron');
 const webpush = require('web-push');
 
 
+
+
+/*
 let serviceAccount;
 if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
   serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
@@ -30,19 +33,17 @@ webpush.setVapidDetails(
   vapidPublicKey,
   vapidPrivateKey
 );
-
-
-
-
+*/
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
+
 
 app.use(cors());
 app.use(express.json());
 
 
-
+app.use(express.static(path.join(__dirname, 'public')));
 
 // --- NEW GEOCODING API ROUTE ---
 app.get('/api/geocode', async (req, res) => {
@@ -203,6 +204,13 @@ function getAqiMeaning(aqi) {
     default: return 'Unknown 💀';
   }
 }
+
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+
 
 app.listen(port, () => {
   console.log(`Server is running and listening on http://localhost:${port}`);

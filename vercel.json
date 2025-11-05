@@ -7,11 +7,10 @@
     }
   ],
   "routes": [
-    { "src": "/api/cron", "dest": "server.js" },
-    { "src": "/api/air-quality", "dest": "server.js" },
-    { "src": "/api/subscribe", "dest": "server.js" },
-    { "src": "/api/geocode", "dest": "server.js" },
-    { "src": "/(.*)", "dest": "/public/$1" }
+    {
+      "src": "/(.*)",
+      "dest": "server.js"
+    }
   ],
   "crons": [
     {
