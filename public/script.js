@@ -44,6 +44,13 @@ searchButton.addEventListener('click', () => {
     fetchCoordsForCity(cityName);
   }
 });
+cityInput.addEventListener('keyup', (event) => {
+  // Check if the key pressed was the "Enter" key
+  if (event.key === 'Enter') {
+    // If it was, simply trigger a click on the search button
+    searchButton.click();
+  }
+});
 
 // public/script.js
 
