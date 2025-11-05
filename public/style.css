@@ -515,8 +515,8 @@ h1 {
     height: 50px;
     border: none;
     outline: none;
-    color: #560c0c;
-    background: #57538f;
+    color: #054b9c;
+    background: #b8b6d4;
     cursor: pointer;
     position: relative;
     z-index: 0;
@@ -546,7 +546,7 @@ h1 {
 }
 
 .glow-on-hover:active {
-    color: #57538f
+    color: #b8b6d4
 }
 
 .glow-on-hover:active:after {
@@ -561,7 +561,7 @@ h1 {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: #57538f;
+    background: #b8b6d4;
     left: 0;
     top: 0;
     border-radius: 10px;
