@@ -508,106 +508,67 @@ h1 {
 
 /* public/style.css */
 
-/* --- NEW BUBBLY BUTTON STYLING --- */
-#check-btn {
-  font-family: 'Helvetica', 'Arial', sans-serif;
-  display: inline-block;
-  font-size: 1em;
-  padding: 1em 2em;
-  -webkit-appearance: none;
-  appearance: none;
-  background-color: #33ae6c; /* Our neutral gray color */
-  color: #fff;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
-  position: relative;
-  transition: transform ease-in 0.1s, box-shadow ease-in 0.25s;
-  box-shadow: 0 2px 25px rgba(20, 116, 79, 0.5); /* Shadow matching the gray */
+/* --- FINAL GLOWING BUTTON STYLING --- */
+
+.glow-on-hover {
+    width: 100%; /* Make it full-width to match our layout */
+    height: 50px;
+    border: none;
+    outline: none;
+    color: #fff;
+    background: #111;
+    cursor: pointer;
+    position: relative;
+    z-index: 0;
+    border-radius: 10px;
+    margin-bottom: 30px; /* Add some space below */
 }
 
-.bubbly-button:focus {
-  outline: 0;
+.glow-on-hover:before {
+    content: '';
+    background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+    position: absolute;
+    top: -2px;
+    left:-2px;
+    background-size: 400%;
+    z-index: -1;
+    filter: blur(5px);
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    animation: glowing 20s linear infinite;
+    
+    /* THIS IS THE KEY CHANGE: Opacity is now ALWAYS 1 */
+    opacity: 1; 
+    
+    transition: opacity .3s ease-in-out;
+    border-radius: 10px;
 }
 
-.bubbly-button:before, .bubbly-button:after {
-  position: absolute;
-  content: '';
-  display: block;
-  width: 140%;
-  height: 100%;
-  left: -20%;
-  z-index: -1000;
-  transition: all ease-in-out 0.5s;
-  background-repeat: no-repeat;
+.glow-on-hover:active {
+    color: #000
 }
 
-.bubbly-button:before {
-  display: none;
-  top: -75%;
-  background-image:
-    radial-gradient(circle, #6c757d 20%, transparent 20%),
-    radial-gradient(circle, transparent 20%, #6c757d 20%, transparent 30%),
-    radial-gradient(circle, #6c757d 20%, transparent 20%),
-    radial-gradient(circle, #6c757d 20%, transparent 20%),
-    radial-gradient(circle, transparent 10%, #6c757d 15%, transparent 20%),
-    radial-gradient(circle, #6c757d 20%, transparent 20%),
-    radial-gradient(circle, #6c757d 20%, transparent 20%),
-    radial-gradient(circle, #6c757d 20%, transparent 20%),
-    radial-gradient(circle, #6c757d 20%, transparent 20%);
-  background-size: 10% 10%, 20% 20%, 15% 15%, 20% 20%, 18% 18%, 10% 10%, 15% 15%, 10% 10%, 18% 18%;
+.glow-on-hover:active:after {
+    background: transparent;
 }
 
-.bubbly-button:after {
-  display: none;
-  bottom: -75%;
-  background-image:
-    radial-gradient(circle, #6c757d 20%, transparent 20%),
-    radial-gradient(circle, #6c757d 20%, transparent 20%),
-    radial-gradient(circle, transparent 10%, #6c757d 15%, transparent 20%),
-    radial-gradient(circle, #6c757d 20%, transparent 20%),
-    radial-gradient(circle, #6c757d 20%, transparent 20%),
-    radial-gradient(circle, #6c757d 20%, transparent 20%),
-    radial-gradient(circle, #6c757d 20%, transparent 20%);
-  background-size: 15% 15%, 20% 20%, 18% 18%, 20% 20%, 15% 15%, 10% 10%, 20% 20%;
+/* We no longer need the :hover:before rule, as the glow is always on */
+
+.glow-on-hover:after {
+    z-index: -1;
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #111;
+    left: 0;
+    top: 0;
+    border-radius: 10px;
 }
 
-.bubbly-button:active {
-  transform: scale(0.9);
-  background-color: #a11bb3; /* Darker gray */
-  box-shadow: 0 2px 25px rgba(16, 47, 75, 0.2);
+@keyframes glowing {
+    0% { background-position: 0 0; }
+    50% { background-position: 400% 0; }
+    100% { background-position: 0 0; }
 }
-
-.bubbly-button.animate:before {
-  display: block;
-  animation: topBubbles ease-in-out 0.75s forwards;
-}
-
-.bubbly-button.animate:after {
-  display: block;
-  animation: bottomBubbles ease-in-out 0.75s forwards;
-}
-
-@keyframes topBubbles {
-  0% { background-position: 5% 90%, 10% 90%, 10% 90%, 15% 90%, 25% 90%, 25% 90%, 40% 90%, 55% 90%, 70% 90%; }
-  50% { background-position: 0% 80%, 0% 20%, 10% 40%, 20% 0%, 30% 30%, 22% 50%, 50% 50%, 65% 20%, 90% 30%; }
-  100% {
-    background-position: 0% 70%, 0% 10%, 10% 30%, 20% -10%, 30% 20%, 22% 40%, 50% 40%, 65% 10%, 90% 20%;
-    background-size: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;
-  }
-}
-
-@keyframes bottomBubbles {
-  0% { background-position: 10% -10%, 30% 10%, 55% -10%, 70% -10%, 85% -10%, 70% -10%, 70% 0%; }
-  50% { background-position: 0% 80%, 20% 80%, 45% 60%, 60% 100%, 75% 70%, 95% 60%, 105% 0%; }
-  100% {
-    background-position: 0% 90%, 20% 90%, 45% 70%, 60% 110%, 75% 80%, 95% 70%, 110% 10%;
-    background-size: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;
-  }
-}
-
-
-
-
-
 
