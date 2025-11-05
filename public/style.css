@@ -511,12 +511,12 @@ h1 {
 /* --- FINAL GLOWING BUTTON STYLING --- */
 
 .glow-on-hover {
-    width: 100%; /* Make it full-width to match our layout */
+    width: 60%; /* Make it full-width to match our layout */
     height: 50px;
     border: none;
     outline: none;
-    color: #fff;
-    background: #111;
+    color: #560c0c;
+    background: #1f1a6a;
     cursor: pointer;
     position: relative;
     z-index: 0;
@@ -542,10 +542,11 @@ h1 {
     
     transition: opacity .3s ease-in-out;
     border-radius: 10px;
+    pointer-events: none; 
 }
 
 .glow-on-hover:active {
-    color: #000
+    color: #132d5a
 }
 
 .glow-on-hover:active:after {
@@ -560,10 +561,11 @@ h1 {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: #111;
+    background: #182e5e;
     left: 0;
     top: 0;
     border-radius: 10px;
+    pointer-events: none;
 }
 
 @keyframes glowing {
