@@ -55,7 +55,7 @@ app.get('/api/geocode', async (req, res) => {
     const apiKey = process.env.API_KEY;
     
     // This is the OpenWeatherMap Geocoding API endpoint
-    const geocodeUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`;
+    const geocodeUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`;
     
     const apiResponse = await fetch(geocodeUrl);
     const data = await apiResponse.json();

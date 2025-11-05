@@ -319,3 +319,26 @@ function getBarColor(percentage) {
   if (percentage < 75) return '#fd7e14'; // Orange
   return '#dc3545'; // Red
 }
+
+// public/script.js
+
+// --- Bubbly Button Animation Logic ---
+var bubblyButtons = document.getElementsByClassName("bubbly-button");
+
+for (var i = 0; i < bubblyButtons.length; i++) {
+  bubblyButtons[i].addEventListener('click', function(e) {
+    // Prevent the default button action for a moment
+    e.preventDefault();
+    
+    // Reset animation
+    e.target.classList.remove('animate');
+    
+    // Add animate class
+    e.target.classList.add('animate');
+    
+    // Remove animate class after animation ends
+    setTimeout(function() {
+      e.target.classList.remove('animate');
+    }, 700);
+  }, false);
+}
