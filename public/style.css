@@ -18,7 +18,7 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background-color: #f0f2f5;
+  background-color: #112a51;
   color: #333;
   margin: 0;
   padding: 20px;
@@ -500,7 +500,7 @@ h1 {
   flex-grow: 1; /* Allow the input to take up available space */
   padding: 12px;
   font-size: 16px;
-  border: 1px solid #ccc;
+  border: 1px solid #db5b9f;
   border-radius: 6px;
 }
 
@@ -516,7 +516,7 @@ h1 {
     border: none;
     outline: none;
     color: #560c0c;
-    background: #1f1a6a;
+    background: #57538f;
     cursor: pointer;
     position: relative;
     z-index: 0;
@@ -546,7 +546,7 @@ h1 {
 }
 
 .glow-on-hover:active {
-    color: #132d5a
+    color: #57538f
 }
 
 .glow-on-hover:active:after {
@@ -561,7 +561,7 @@ h1 {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: #182e5e;
+    background: #57538f;
     left: 0;
     top: 0;
     border-radius: 10px;
