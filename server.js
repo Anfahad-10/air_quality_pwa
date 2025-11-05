@@ -74,7 +74,7 @@ app.get('/api/geocode', async (req, res) => {
   }
 });
 
-app.get('/air-quality', async (req, res) => {
+app.get('/api/air-quality', async (req, res) => {
     try {
         const { lat, lon } = req.query;
         const apiKey = process.env.API_KEY;
@@ -94,7 +94,7 @@ app.get('/air-quality', async (req, res) => {
 
 
 
-app.post('/subscribe', async (req, res) => {
+app.post('/api/subscribe', async (req, res) => {
   try {
     const { subscription, location, frequency } = req.body; 
     console.log('Received new subscription with location and frequency.');

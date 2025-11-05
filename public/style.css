@@ -516,14 +516,14 @@ h1 {
   padding: 1em 2em;
   -webkit-appearance: none;
   appearance: none;
-  background-color: #6c757d; /* Our neutral gray color */
+  background-color: #33ae6c; /* Our neutral gray color */
   color: #fff;
   border-radius: 4px;
   border: none;
   cursor: pointer;
   position: relative;
   transition: transform ease-in 0.1s, box-shadow ease-in 0.25s;
-  box-shadow: 0 2px 25px rgba(108, 117, 125, 0.5); /* Shadow matching the gray */
+  box-shadow: 0 2px 25px rgba(20, 116, 79, 0.5); /* Shadow matching the gray */
 }
 
 .bubbly-button:focus {
@@ -574,8 +574,8 @@ h1 {
 
 .bubbly-button:active {
   transform: scale(0.9);
-  background-color: #5a6268; /* Darker gray */
-  box-shadow: 0 2px 25px rgba(108, 117, 125, 0.2);
+  background-color: #a11bb3; /* Darker gray */
+  box-shadow: 0 2px 25px rgba(16, 47, 75, 0.2);
 }
 
 .bubbly-button.animate:before {

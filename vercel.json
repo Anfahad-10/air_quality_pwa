@@ -4,29 +4,19 @@
     {
       "src": "server.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "public/**",
-      "use": "@vercel/static"
     }
   ],
   "routes": [
+    { "src": "/api/cron", "dest": "server.js" },
+    { "src": "/api/air-quality", "dest": "server.js" },
+    { "src": "/api/subscribe", "dest": "server.js" },
+    { "src": "/api/geocode", "dest": "server.js" },
+    { "src": "/(.*)", "dest": "/public/$1" }
+  ],
+  "crons": [
     {
-      "src": "/(.*).(css|js|png|ico|json|svg)",
-      "dest": "/public/$1.$2"
-    },
-    {
-      "src": "/air-quality",
-      "dest": "/server.js"
-    },
-    {
-      "src": "/subscribe",
-      "dest": "/server.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/public/index.html"
-    },
-    { "src": "/api/geocode", "dest": "server.js" }
+      "path": "/api/cron",
+      "schedule": "0 0 * * *"
+    }
   ]
 }
