@@ -44,6 +44,35 @@ app.use(express.json());
 
 
 
+// --- NEW GEOCODING API ROUTE ---
+app.get('/api/geocode', async (req, res) => {
+  try {
+    const { city } = req.query; // Get the city name from the request
+    if (!city) {
+      return res.status(400).json({ error: 'City name is required' });
+    }
+
+    const apiKey = process.env.API_KEY;
+    
+    // This is the OpenWeatherMap Geocoding API endpoint
+    const geocodeUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`;
+    
+    const apiResponse = await fetch(geocodeUrl);
+    const data = await apiResponse.json();
+
+    if (!data || data.length === 0) {
+      return res.status(404).json({ error: 'City not found' });
+    }
+
+    // Send back the coordinates of the first result
+    const { lat, lon } = data[0];
+    res.json({ latitude: lat, longitude: lon });
+
+  } catch (error) {
+    console.error("Error in /api/geocode endpoint:", error);
+    res.status(500).json({ error: 'Failed to geocode city' });
+  }
+});
 
 app.get('/air-quality', async (req, res) => {
     try {

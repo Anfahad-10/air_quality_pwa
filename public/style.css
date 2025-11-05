@@ -487,57 +487,38 @@ h1 {
 
 
 
+/* public/style.css */
 
+/* --- NEW SEARCH BAR STYLING --- */
+#search-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
 
+#city-input {
+  flex-grow: 1; /* Allow the input to take up available space */
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
 
+#search-btn {
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  background-color: #6c757d; /* A neutral gray color */
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#search-btn:hover {
+  background-color: #5a6268;
+}
 
 
 

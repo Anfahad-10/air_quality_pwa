@@ -31,6 +31,47 @@ checkButton.addEventListener('click', () => {
   }
 });
 
+// public/script.js
+
+const searchButton = document.getElementById('search-btn');
+const cityInput = document.getElementById('city-input');
+
+searchButton.addEventListener('click', () => {
+  const cityName = cityInput.value.trim();
+  if (cityName) {
+    console.log(`Searching for city: ${cityName}`);
+    // Call a new function to handle the search
+    fetchCoordsForCity(cityName);
+  }
+});
+
+// public/script.js
+
+function fetchCoordsForCity(city) {
+  // Call our new geocoding endpoint on the server
+  fetch(`/api/geocode?city=${city}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('City not found');
+      }
+      return response.json();
+    })
+    .then(coords => {
+      console.log('Coordinates found:', coords);
+      // We already have a function to get AQI from coordinates!
+      // Let's reuse it.
+      fetchAirQualityFromServer(coords);
+      
+      // Also, scroll to the result
+      document.getElementById('result-container').scrollIntoView({ behavior: 'smooth' });
+    })
+    .catch(error => {
+      console.error('Geocoding error:', error);
+      // Display the error to the user
+      document.getElementById('aqi-meaning').textContent = "City not found.";
+    });
+}
+
 function handleLocationSuccess(position) {
   currentLocation = {
     latitude: position.coords.latitude,

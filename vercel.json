@@ -26,6 +26,7 @@
     {
       "src": "/(.*)",
       "dest": "/public/index.html"
-    }
+    },
+    { "src": "/api/geocode", "dest": "server.js" }
   ]
 }
