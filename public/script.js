@@ -23,6 +23,12 @@ if ('serviceWorker' in navigator) {
 
 const checkButton = document.getElementById('check-btn');
 checkButton.addEventListener('click', () => {
+  checkButton.classList.remove('animate');
+  checkButton.classList.add('animate');
+  setTimeout(function(){
+    checkButton.classList.remove('animate');
+  }, 700);
+
   console.log('Button clicked! Getting location...');
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(handleLocationSuccess, showError);
@@ -56,7 +62,7 @@ cityInput.addEventListener('keyup', (event) => {
 
 function fetchCoordsForCity(city) {
   // Call our new geocoding endpoint on the server
-  fetch(`/geocode?city=${city}`)
+  fetch(`/api/geocode?city=${city}`)
     .then(response => {
       if (!response.ok) {
         throw new Error('City not found');
@@ -133,7 +139,7 @@ async function subscribeUserToPush() {
 }
 
 function fetchAirQualityFromServer(location) {
-  const serverUrl = `/air-quality?lat=${location.latitude}&lon=${location.longitude}`;
+  const serverUrl = `/api/air-quality?lat=${location.latitude}&lon=${location.longitude}`;
   fetch(serverUrl)
     .then(response => response.json())
     // script.js ... inside fetchAirQualityFromServer
@@ -231,7 +237,7 @@ function sendSubscriptionToServer(subscription, location) {
   const frequency = dropdown.dataset.selectedValue || '28800000';
   console.log(`With selected frequency: ${frequency}ms`);
 
-  fetch('/subscribe', {
+  fetch('/api/subscribe', {
     method: 'POST',
     body: JSON.stringify({ subscription, location, frequency }),
     headers: { 'Content-Type': 'application/json' }
@@ -318,27 +324,4 @@ function getBarColor(percentage) {
   if (percentage < 50) return '#ffc107'; // Yellow
   if (percentage < 75) return '#fd7e14'; // Orange
   return '#dc3545'; // Red
-}
-
-// public/script.js
-
-// --- Bubbly Button Animation Logic ---
-var bubblyButtons = document.getElementsByClassName("bubbly-button");
-
-for (var i = 0; i < bubblyButtons.length; i++) {
-  bubblyButtons[i].addEventListener('click', function(e) {
-    // Prevent the default button action for a moment
-    e.preventDefault();
-    
-    // Reset animation
-    e.target.classList.remove('animate');
-    
-    // Add animate class
-    e.target.classList.add('animate');
-    
-    // Remove animate class after animation ends
-    setTimeout(function() {
-      e.target.classList.remove('animate');
-    }, 700);
-  }, false);
 }

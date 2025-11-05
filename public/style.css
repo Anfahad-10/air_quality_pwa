@@ -509,7 +509,7 @@ h1 {
 /* public/style.css */
 
 /* --- NEW BUBBLY BUTTON STYLING --- */
-.bubbly-button {
+#check-btn {
   font-family: 'Helvetica', 'Arial', sans-serif;
   display: inline-block;
   font-size: 1em;
