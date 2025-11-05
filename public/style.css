@@ -274,21 +274,71 @@ h1 {
   transition: all 0.5s ease; 
 }
 
+
+
+/* public/style.css */
+
+/* --- NEW Bar Chart Pollutant Styling --- */
+
 #pollutant-data-container {
   display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  gap: 15px;
-  background-color: #f9f9f9;
-  border-color: #e0e0e0;
-
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5), 
-              0 0 10px rgba(0, 123, 255, 0.4);
+  flex-direction: column; /* Stack the bars vertically */
+  gap: 15px; /* Space between each bar item */
+  margin-top: 25px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  
+  /* A simpler, cleaner glow */
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.15);
 }
 
 .pollutant-item {
-  text-align: center;
+  width: 100%;
 }
+
+/* Container for the name and value */
+.pollutant-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.pollutant-item .name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+}
+
+.pollutant-item .value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1c1e21;
+}
+
+/* The background track for the bar */
+.bar-container {
+  width: 100%;
+  height: 8px;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden; /* Ensures the bar stays within the rounded corners */
+}
+
+/* The colored bar that shows the value */
+.bar {
+  height: 100%;
+  width: 0%; /* Start at 0% width */
+  border-radius: 4px;
+  background-color: #6c757d; /* Default gray */
+  
+  /* Smooth animation when the width changes */
+  transition: width 1s cubic-bezier(0.23, 1, 0.32, 1), background-color 0.5s ease;
+}
+
+
 .pollutant-item .name {
   font-size: 14px; font-weight: 600; color: #555;
 }

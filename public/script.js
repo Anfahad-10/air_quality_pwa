@@ -108,25 +108,43 @@ function fetchAirQualityFromServer(location) {
     document.getElementById('gauge-needle').style.transform = `translateX(-80px) rotate(${rotationAngle}deg)`;
 
     // --- NEW: Populate Pollutant Data ---
+    // public/script.js ... inside the .then(data => { ... }) block
+
+    // --- NEW: Populate Pollutant Data with Bar Charts ---
     const pollutantContainer = document.getElementById('pollutant-data-container');
-    pollutantContainer.innerHTML = `
-      <div class="pollutant-item">
-        <div class="name">PM2.5</div>
-        <div class="value">${components.pm2_5} <span>µg/m³</span></div>
-      </div>
-      <div class="pollutant-item">
-        <div class="name">PM10</div>
-        <div class="value">${components.pm10} <span>µg/m³</span></div>
-      </div>
-      <div class="pollutant-item">
-        <div class="name">SO₂</div>
-        <div class="value">${components.so2} <span>µg/m³</span></div>
-      </div>
-      <div class="pollutant-item">
-        <div class="name">NO₂</div>
-        <div class="value">${components.no2} <span>µg/m³</span></div>
-      </div>
-    `;
+    pollutantContainer.innerHTML = ''; // Clear any old data
+
+    // Define the pollutants we want to display and their "Very Poor" threshold
+    // These are based on the AQI index chart you shared
+    const pollutantsToShow = [
+      { name: 'PM2.5', key: 'pm2_5', max: 75 },
+      { name: 'PM10', key: 'pm10', max: 200 },
+      { name: 'SO₂', key: 'so2', max: 350 },
+      { name: 'NO₂', key: 'no2', max: 200 }
+    ];
+
+    pollutantsToShow.forEach(pollutant => {
+      const value = components[pollutant.key];
+      // Calculate the width percentage, capping at 100%
+      const percentage = Math.min((value / pollutant.max) * 100, 100);
+      const barColor = getBarColor(percentage);
+
+      // Create the new HTML elements for each pollutant
+      const itemHTML = `
+        <div class="pollutant-item">
+          <div class="pollutant-info">
+            <span class="name">${pollutant.name}</span>
+            <span class="value">${value} µg/m³</span>
+          </div>
+          <div class="bar-container">
+            <div class="bar" style="width: ${percentage}%; background-color: ${barColor};"></div>
+          </div>
+        </div>
+      `;
+      
+      // Add the new element to the container
+      pollutantContainer.insertAdjacentHTML('beforeend', itemHTML);
+    });
 
     document.getElementById('recommendations-text').textContent = recommendation;
     resultContainer.className = '';
@@ -241,4 +259,15 @@ function setupModernDropdown() {
       dropdownCheckbox.checked = false;
     });
   });
+}
+
+
+// public/script.js
+
+// ADD THIS NEW HELPER FUNCTION at the bottom
+function getBarColor(percentage) {
+  if (percentage < 25) return '#28a745'; // Green
+  if (percentage < 50) return '#ffc107'; // Yellow
+  if (percentage < 75) return '#fd7e14'; // Orange
+  return '#dc3545'; // Red
 }
