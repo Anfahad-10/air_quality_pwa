@@ -169,12 +169,15 @@ function fetchAirQualityFromServer(location) {
         // --- All the logic to update the UI ---
         const aqiData = data.list[0];
         const aqi = data.list[0].main.aqi;
+        const currentHealthConditions = [];
+        document.querySelectorAll('input[name="conditions"]:checked').forEach(c => currentHealthConditions.push(c.value));
+        const maskRec = getMaskRecommendation(aqi, currentHealthConditions);
         const components = aqiData.components;
         const meaning = getAqiMeaning(aqi);
         const rotationAngle = getAqiRotation(aqi);
         const selectedConditions = [];
 
-        const recommendation = getRecommendations(aqi, []); 
+        const recommendation = getRecommendations(aqi, []);   
         const colorClass = getAqiColorClass(aqi);
         const resultContainer = document.getElementById('result-container');
 
@@ -182,11 +185,14 @@ function fetchAirQualityFromServer(location) {
         document.getElementById('aqi-value').textContent = aqi;
         document.getElementById('aqi-meaning').textContent = meaning;
         document.getElementById('gauge-needle').style.transform = `translateX(-80px) rotate(${rotationAngle}deg)`;
+        document.getElementById('mask-image').src = maskRec.image;
+        document.getElementById('mask-text').textContent = maskRec.text;
         // Populate Pollutant Bars
         updatePollutantBars(components);
         
         // Populate Recommendations Box
-        document.getElementById('recommendations-text').textContent = recommendation;
+        document.getElementById('recommendations-text').innerHTML = recommendation;
+        
         
         // Apply dynamic class for coloring
         resultContainer.className = '';
@@ -334,7 +340,7 @@ function getBarColor(percentage) {
 }
 function updateRecommendationText() {
   // Get the current AQI value from the gauge on the page
-  const aqi = parseInt(document.getElementById('aqi-value').textContent, 10);
+  const aqi = parseInt(document.getElementById('aqi-value').innerHTML, 10);
   
   // If there's no valid AQI number, do nothing
   if (isNaN(aqi)) return; 
@@ -343,55 +349,88 @@ function updateRecommendationText() {
   const recommendation = getRecommendations(aqi, currentHealthConditions);
   
   // Update the text on the page
-  document.getElementById('recommendations-text').textContent = recommendation;
+  document.getElementById('recommendations-text').innerHTML = recommendation;
 }
 
-// REPLACE the old function with this new, smarter version
-function getRecommendations(aqi, healthConditions = []) {
-  // Check if the user has indicated any sensitive conditions
-  const isSensitive = healthConditions.includes('Asthma') || 
-                      healthConditions.includes('Alleries') || 
-                      healthConditions.includes('COPD');
 
-  // --- Base Recommendations (for everyone) ---
-  let baseRecommendation = '';
+
+
+function getRecommendations(aqi, healthConditions = []) {
+  const isSensitive = healthConditions.length > 0;
+  
+  let recommendations = {
+    dos: [],
+    donts: [],
+    sensitive_dos: [],
+    sensitive_donts: []
+  };
+
   switch (aqi) {
     case 1: // Good
-      baseRecommendation = "It's a beautiful day for outdoor activities. Enjoy the fresh air!";
+      recommendations.dos.push("Enjoy outdoor activities.");
+      recommendations.dos.push("It's a great time to ventilate your home by opening windows.");
       break;
     case 2: // Fair
-      baseRecommendation = "The air quality is acceptable. A great day for most activities.";
+      recommendations.dos.push("It's a good day for most outdoor activities.");
+      recommendations.sensitive_donts.push("If you have respiratory conditions, consider reducing prolonged or heavy exertion outdoors.");
       break;
     case 3: // Moderate
-      baseRecommendation = "The air quality is moderate. Consider reducing prolonged or heavy outdoor exertion.";
+      recommendations.dos.push("Keep an eye on the air quality if you feel symptoms.");
+      recommendations.donts.push("Don't engage in heavy outdoor exercise for long periods.");
+      recommendations.sensitive_dos.push("Stay indoors as much as possible.");
+      recommendations.sensitive_donts.push("Avoid any strenuous outdoor activities.");
       break;
     case 4: // Poor
-      baseRecommendation = "Air quality is poor. It's recommended to wear a mask (like an N95) if you are outdoors for an extended period. Try to keep windows closed.";
+      recommendations.dos.push("Wear a high-quality mask (N95 or better) if you must go outside.");
+      recommendations.dos.push("Use an air purifier indoors if you have one.");
+      recommendations.donts.push("Avoid all non-essential outdoor activities.");
+      recommendations.donts.push("Don't exercise outdoors.");
+      recommendations.sensitive_dos.push("Keep any necessary medication (e.g., inhalers) readily available.");
       break;
     case 5: // Very Poor
-      baseRecommendation = "Health Alert: Air quality is very poor. It is strongly advised to avoid all outdoor exertion. Keep windows closed and use an air purifier if available.";
+      recommendations.dos.push("Stay indoors with windows and doors closed.");
+      recommendations.dos.push("Run an air purifier on a high setting.");
+      recommendations.donts.push("Avoid all outdoor exertion completely.");
+      recommendations.sensitive_donts.push("Be vigilant for symptoms and seek medical advice if they worsen.");
       break;
     default:
-      return 'Check the air quality to see recommendations.';
+      return '<p>Check the air quality to see recommendations.</p>';
   }
 
-  // --- Personalized Additions (for sensitive groups) ---
-  let personalAddition = '';
-  if (isSensitive) {
-    if (aqi === 2) { // Fair
-      personalAddition = " As a precaution, you may want to limit heavy outdoor exercise.";
+  // --- Now, we build the HTML string ---
+  let html = '';
+
+  if (recommendations.dos.length > 0) {
+    html += '<h4>Do:</h4><ul>';
+    recommendations.dos.forEach(item => { html += `<li>${item}</li>`; });
+    html += '</ul>';
+  }
+
+  if (recommendations.donts.length > 0) {
+    html += '<h4>Don\'t:</h4><ul>';
+    recommendations.donts.forEach(item => { html += `<li>${item}</li>`; });
+    html += '</ul>';
+  }
+  
+  // If the user is sensitive and there's specific advice, add a special section
+  if (isSensitive && (recommendations.sensitive_dos.length > 0 || recommendations.sensitive_donts.length > 0)) {
+    html += '<hr><h4>For Your Health Condition:</h4>';
+    if (recommendations.sensitive_dos.length > 0) {
+      html += '<ul>';
+      recommendations.sensitive_dos.forEach(item => { html += `<li>${item}</li>`; });
+      html += '</ul>';
     }
-    if (aqi === 3) { // Moderate
-      personalAddition = " You are more likely to feel effects. It's a good idea to limit your time outdoors.";
-    }
-    if (aqi >= 4) { // Poor or Very Poor
-      personalAddition = " You are at higher risk. It is very important to avoid outdoor activities and ensure your indoor air is clean. Keep any necessary medication, like an inhaler, readily available.";
+    if (recommendations.sensitive_donts.length > 0) {
+      html += '<h5>Extra Precautions (Don\'t):</h5><ul>';
+      recommendations.sensitive_donts.forEach(item => { html += `<li>${item}</li>`; });
+      html += '</ul>';
     }
   }
 
-  // Combine the base recommendation with the personalized advice
-  return baseRecommendation + personalAddition;
+  return html;
 }
+
+
 function showError(error) { console.error('Error getting location:', error.message); }
 function urlBase64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -402,3 +441,34 @@ function urlBase64ToUint8Array(base64String) {
   return outputArray;
 }
 
+
+
+// ADD THIS NEW HELPER FUNCTION
+function getMaskRecommendation(aqi, healthConditions = []) {
+  const isSensitive = healthConditions.length > 0;
+  let recommendation = {
+    image: 'no-mask.png', // Default
+    text: 'No mask needed. Enjoy the fresh air!'
+  };
+
+  if (aqi === 3) { // Moderate
+    if (isSensitive) {
+      recommendation.image = 'cloth-mask.png';
+      recommendation.text = 'A cloth or surgical mask is recommended for sensitive individuals.';
+    } else {
+      recommendation.text = 'No mask needed for the general public.';
+    }
+  } else if (aqi === 4) { // Poor
+    recommendation.image = 'n95-mask.png';
+    if (isSensitive) {
+      recommendation.text = 'A high-quality N95 or FFP2 mask is strongly recommended for you.';
+    } else {
+      recommendation.text = 'A cloth or surgical mask is recommended for prolonged outdoor activity.';
+    }
+  } else if (aqi >= 5) { // Very Poor
+    recommendation.image = 'n95-mask.png';
+    recommendation.text = 'A high-quality N95 or FFP2 mask is essential for any outdoor exposure.';
+  }
+
+  return recommendation;
+}
