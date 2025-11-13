@@ -574,3 +574,138 @@ h1 {
     100% { background-position: 0 0; }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* public/style.css */
+
+/* --- NEW MODERN MODAL STYLING --- */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  width: 90%;
+  max-width: 450px;
+  text-align: center;
+  transform: scale(1);
+  transition: transform 0.3s ease;
+}
+
+/* Hidden state for the modal */
+.modal-overlay.hidden {
+  opacity: 0;
+  pointer-events: none; /* Clicks pass through when hidden */
+}
+.modal-overlay.hidden .modal-content {
+  transform: scale(0.95);
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  font-size: 22px;
+}
+.modal-content p {
+  color: #666;
+  margin-bottom: 25px;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.modal-btn {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.yes-btn {
+  background-color: #007bff;
+  color: white;
+}
+.no-btn {
+  background-color: #e9ecef;
+  color: #333;
+}
+.save-btn {
+  background-color: #28a745;
+  color: white;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.modal-btn:hover {
+  opacity: 0.9;
+}
+.modal-btn:active {
+  transform: scale(0.98);
+}
+
+#conditions-list {
+    text-align: left;
+    max-height: 0; /* Start with zero height */
+    overflow: hidden; /* Hide the content */
+    opacity: 0; /* Start fully transparent */
+    transition: all 0.5s ease-in-out; /* Smooth transition */
+}
+
+/* When the 'visible' class is added, it expands */
+#conditions-list.visible {
+    max-height: 300px; /* Animate to a height large enough for content */
+    opacity: 1; /* Fade in */
+    margin-top: 20px; /* Add space when it appears */
+    border-top: 1px solid #eee; /* Add a separator line */
+    padding-top: 20px;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.checkbox-group input {
+  margin-right: 10px;
+}

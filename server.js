@@ -97,7 +97,7 @@ app.get('/api/air-quality', async (req, res) => {
 
 app.post('/api/subscribe', async (req, res) => {
   try {
-    const { subscription, location, frequency } = req.body; 
+    const { subscription, location, frequency, healthConditions } = req.body; 
     console.log('Received new subscription with location and frequency.');
 
     const docId = encodeURIComponent(subscription.endpoint);
@@ -106,7 +106,8 @@ app.post('/api/subscribe', async (req, res) => {
       subscription: subscription,
       location: location,
       frequency: parseInt(frequency, 10),
-      lastCheckedTimestamp: new Date() 
+      lastCheckedTimestamp: new Date(), 
+      healthConditions: healthConditions || []
     });
     
     res.status(201).json({ message: 'Subscription, location, and frequency saved.' });
@@ -205,11 +206,16 @@ function getAqiMeaning(aqi) {
   }
 }
 
-
+/*
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+*/
 
+// This is the correct way
+app.get(/^(?!\/api).*/, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 
 app.listen(port, () => {

@@ -101,6 +101,37 @@
 </div>
   
   <script src="script.js"></script>
+
+  <div id="health-modal-overlay" class="modal-overlay hidden">
+    <div id="health-modal" class="modal-content">
+      <h2>Do you have any pre-existing respiratory conditions?</h2>
+      <p>Providing this optional info helps us give you more personalized recommendations. We will never share this data.</p>
+      
+      <div class="modal-buttons">
+        <button id="condition-yes-btn" class="modal-btn yes-btn">Yes, I do</button>
+        <button id="condition-no-btn" class="modal-btn no-btn">No, I'd rather not say</button>
+      </div>
+
+      <!-- This part is hidden until the user clicks "Yes" -->
+      <div id="conditions-list" class="hidden">
+        <hr>
+        <p>Please select any that apply:</p>
+        <div class="checkbox-group">
+          <input type="checkbox" id="asthma" name="conditions" value="Asthma">
+          <label for="asthma">Asthma</label>
+        </div>
+        <div class="checkbox-group">
+          <input type="checkbox" id="allergies" name="conditions" value="Allergies">
+          <label for="allergies">Allergies</label>
+        </div>
+        <div class="checkbox-group">
+          <input type="checkbox" id="copd" name="conditions" value="COPD">
+          <label for="copd">COPD</label>
+        </div>
+        <button id="save-conditions-btn" class="modal-btn save-btn">Save & Continue</button>
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>
