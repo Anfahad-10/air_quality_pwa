@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,19 +12,19 @@
 
 <body>
   <div class="app-container">
-    
+
     <div class="title-container">
-      <h1 class="card__title">AeroSense</h1>
+      <h1 class="card__title">Fresh AIR 🌀 </h1>
     </div>
-    <p>School Project by <b>AQSA ANWAR</b> and <b>CHITRA RAWAT</b></p>
     <br>
 
     <div id="search-container">
       <input type="text" id="city-input" placeholder="e.g., London, New York, Tokyo...">
-      <button id="search-btn" style="background-color: #dce70f; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Search</button>
+      <button id="search-btn"
+        style="background-color: #dce70f; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Search</button>
 
     </div>
-    
+
 
     <button class="glow-on-hover" id="check-btn" type="button">
       Check My Current Location
@@ -40,7 +41,7 @@
 
 
 
-<!--
+    <!--
   <div id="settings-container">
   
     <h3>Notification Frequency</h3>
@@ -63,83 +64,85 @@
   </div>
 </div>
 -->
-<svg style="display: none;">
-  <filter id="goo">
-    <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
-    <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
-    <feBlend in="SourceGraphic" in2="goo" />
-  </filter>
+    <svg style="display: none;">
+      <filter id="goo">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+        <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
+        <feBlend in="SourceGraphic" in2="goo" />
+      </filter>
 
-  <filter id="goo-button">
-    <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="10"></feGaussianBlur>
-    <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 21 -7" result="goo"></feColorMatrix>
-    <feBlend in2="goo" in="SourceGraphic" result="mix"></feBlend>
-  </filter>
-  
-</svg>
-    
+      <filter id="goo-button">
+        <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="10"></feGaussianBlur>
+        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 21 -7" result="goo">
+        </feColorMatrix>
+        <feBlend in2="goo" in="SourceGraphic" result="mix"></feBlend>
+      </filter>
+
+    </svg>
+
     <div id="result-container">
-  <h2>Air Quality Index (AQI)</h2>
+      <h2>Air Quality Index (AQI)</h2>
 
-  <div class="gauge-container">
-    <div class="gauge-body">
-      <div class="gauge-arc"></div>
-      <div class="gauge-needle" id="gauge-needle"></div>
-      <div class="gauge-center" id="aqi-value">--</div>
-    </div>
-  </div>
-
-  <p id="aqi-meaning">Awaiting measurement...</p>
-
-  <div id="pollutant-data-container">
-  </div>
-
-    <div id="mask-card" class="recommendation-card">
-    <h3>Recommended Mask</h3>
-      <div class="mask-info">
-        <img id="mask-image" src="" alt="Recommended Mask">
-        <p id="mask-text">Check the air quality to see recommendations.</p>
-      </div>
-    </div>
-  
-  <div id="recommendations-box" class="recommendation-card">
-    <h3>Recommendations</h3>
-    <p id="recommendations-text">Check the air quality to see recommendations.</p>
-  </div>
-</div>
-  
-  <script src="script.js"></script>
-
-  <div id="health-modal-overlay" class="modal-overlay hidden">
-    <div id="health-modal" class="modal-content">
-      <h2>Do you have any pre-existing respiratory conditions?</h2>
-      <p>Providing this optional info helps us give you more personalized recommendations. We will never share this data.</p>
-      
-      <div class="modal-buttons">
-        <button id="condition-yes-btn" class="modal-btn yes-btn">Yes, I do</button>
-        <button id="condition-no-btn" class="modal-btn no-btn">No, I'd rather not say</button>
+      <div class="gauge-container">
+        <div class="gauge-body">
+          <div class="gauge-arc"></div>
+          <div class="gauge-needle" id="gauge-needle"></div>
+          <div class="gauge-center" id="aqi-value">--</div>
+        </div>
       </div>
 
-      <!-- This part is hidden until the user clicks "Yes" -->
-      <div id="conditions-list" class="hidden">
-        <hr>
-        <p>Please select any that apply:</p>
-        <div class="checkbox-group">
-          <input type="checkbox" id="asthma" name="conditions" value="Asthma">
-          <label for="asthma">Asthma</label>
+      <p id="aqi-meaning">Awaiting measurement...</p>
+
+      <div id="pollutant-data-container">
+      </div>
+
+      <div id="mask-card" class="recommendation-card">
+        <h3>Recommended Mask</h3>
+        <div class="mask-info">
+          <img id="mask-image" src="" alt="Recommended Mask">
+          <p id="mask-text">Check the air quality to see recommendations.</p>
         </div>
-        <div class="checkbox-group">
-          <input type="checkbox" id="allergies" name="conditions" value="Allergies">
-          <label for="allergies">Allergies</label>
-        </div>
-        <div class="checkbox-group">
-          <input type="checkbox" id="copd" name="conditions" value="COPD">
-          <label for="copd">COPD</label>
-        </div>
-        <button id="save-conditions-btn" class="modal-btn save-btn">Save & Continue</button>
+      </div>
+
+      <div id="recommendations-box" class="recommendation-card">
+        <h3>Recommendations</h3>
+        <p id="recommendations-text">Check the air quality to see recommendations.</p>
       </div>
     </div>
-  </div>
+
+    <script src="script.js"></script>
+
+    <div id="health-modal-overlay" class="modal-overlay hidden">
+      <div id="health-modal" class="modal-content">
+        <h2>Do you have any pre-existing respiratory conditions?</h2>
+        <p>Providing this optional info helps us give you more personalized recommendations. We will never share this
+          data.</p>
+
+        <div class="modal-buttons">
+          <button id="condition-yes-btn" class="modal-btn yes-btn">Yes, I do</button>
+          <button id="condition-no-btn" class="modal-btn no-btn">No, I'd rather not say</button>
+        </div>
+
+        <!-- This part is hidden until the user clicks "Yes" -->
+        <div id="conditions-list" class="hidden">
+          <hr>
+          <p>Please select any that apply:</p>
+          <div class="checkbox-group">
+            <input type="checkbox" id="asthma" name="conditions" value="Asthma">
+            <label for="asthma">Asthma</label>
+          </div>
+          <div class="checkbox-group">
+            <input type="checkbox" id="allergies" name="conditions" value="Allergies">
+            <label for="allergies">Allergies</label>
+          </div>
+          <div class="checkbox-group">
+            <input type="checkbox" id="copd" name="conditions" value="COPD">
+            <label for="copd">COPD</label>
+          </div>
+          <button id="save-conditions-btn" class="modal-btn save-btn">Save & Continue</button>
+        </div>
+      </div>
+    </div>
 </body>
 
 </html>
