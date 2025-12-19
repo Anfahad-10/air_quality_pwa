@@ -184,7 +184,7 @@ function fetchAirQualityFromServer(location) {
         // Update Gauge
         document.getElementById('aqi-value').textContent = aqi;
         document.getElementById('aqi-meaning').textContent = meaning;
-        document.getElementById('gauge-needle').style.transform = `translateX(-80px) rotate(${rotationAngle}deg)`;
+        document.getElementById('gauge-needle').style.transform = `rotate(${rotationAngle}deg)`;
         document.getElementById('mask-image').src = maskRec.image;
         document.getElementById('mask-text').textContent = maskRec.text;
         // Populate Pollutant Bars
