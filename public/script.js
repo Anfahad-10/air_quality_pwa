@@ -157,6 +157,7 @@ function fetchCoordsForCity(city) {
 }
 
 // Fetches AQI data from our server using coordinates
+// Fetches AQI data from our server using coordinates
 function fetchAirQualityFromServer(location) {
   const serverUrl = `/api/air-quality?lat=${location.latitude}&lon=${location.longitude}`;
   fetch(serverUrl)
@@ -168,22 +169,26 @@ function fetchAirQualityFromServer(location) {
       if (data.list && data.list.length > 0) {
         // --- All the logic to update the UI ---
         const aqiData = data.list[0];
-        const aqi = data.list[0].main.aqi;
+        const components = aqiData.components;
+
+        // Calculate exact Indian AQI
+        const indiaAQI = calculateIndianAQI(components);
+
         const currentHealthConditions = [];
         document.querySelectorAll('input[name="conditions"]:checked').forEach(c => currentHealthConditions.push(c.value));
-        const maskRec = getMaskRecommendation(aqi, currentHealthConditions);
-        const components = aqiData.components;
-        const meaning = getAqiMeaning(aqi);
-        const rotationAngle = getAqiRotation(aqi);
-        const selectedConditions = [];
 
-        const recommendation = getRecommendations(aqi, []);
-        const colorClass = getAqiColorClass(aqi);
+        const maskRec = getMaskRecommendation(indiaAQI, currentHealthConditions);
+        const meaning = getAqiMeaning(indiaAQI);
+        const rotationAngle = getAqiRotation(indiaAQI);
+
+        // Recommendations based on new scale
+        const recommendation = getRecommendations(indiaAQI, currentHealthConditions);
+        const colorClass = getAqiColorClass(indiaAQI);
         const resultContainer = document.getElementById('result-container');
 
         // Update Gauge
         const aqiTextEl = document.getElementById('aqi-value-text') || document.getElementById('aqi-value');
-        if (aqiTextEl) aqiTextEl.textContent = aqi;
+        if (aqiTextEl) aqiTextEl.textContent = indiaAQI;
 
         document.getElementById('aqi-meaning').textContent = meaning;
 
@@ -239,10 +244,10 @@ function updatePollutantBars(components) {
   pollutantContainer.innerHTML = '';
 
   const pollutantsToShow = [
-    { name: 'PM2.5', key: 'pm2_5', max: 75 },
-    { name: 'PM10', key: 'pm10', max: 200 },
-    { name: 'SO₂', key: 'so2', max: 350 },
-    { name: 'NO₂', key: 'no2', max: 200 }
+    { name: 'PM2.5', key: 'pm2_5', max: 250 }, // Adjusted max for bars visual
+    { name: 'PM10', key: 'pm10', max: 430 },
+    { name: 'SO₂', key: 'so2', max: 1600 },
+    { name: 'NO₂', key: 'no2', max: 400 }
   ];
 
   pollutantsToShow.forEach(pollutant => {
@@ -305,60 +310,58 @@ function setupBubblyButton() {
 }
 
 // --- Other Helper Functions ---
+
+// 1. Rotation: Map 0-500 AQI to 0-180 degrees
 function getAqiRotation(aqi) {
-  // Map AQI 1-5 to 5 equal 36-degree zones (Total 180 degrees)
-  // Centers: 18, 54, 90, 126, 162
-  const zoneSize = 180 / 5;
-  return ((aqi - 1) * zoneSize) + (zoneSize / 2);
+  // min 0 -> 0 deg
+  // max 500 -> 180 deg
+  // Cap at 500 for rotation visual
+  const val = Math.min(aqi, 500);
+  return (val / 500) * 180;
 }
 
+// 2. Meaning: CPCB Categories
 function getAqiMeaning(aqi) {
-  switch (aqi) {
-    case 1: return 'Good 😍';
-    case 2: return 'Fair 👍';
-    case 3: return 'Moderate 😊';
-    case 4: return 'Poor 😷';
-    case 5: return 'Very Poor, RUN 🏃‍♂️‍➡️';
-    default: return 'Unknown 💀';
-  }
+  if (aqi <= 50) return 'Good 😍';
+  if (aqi <= 100) return 'Satisfactory 😊';
+  if (aqi <= 200) return 'Moderate 😐';
+  if (aqi <= 300) return 'Poor 😷';
+  if (aqi <= 400) return 'Very Poor ⚠️';
+  return 'Severe ☠️';
 }
+
+// 3. Color Class
 function getAqiColorClass(aqi) {
-  switch (aqi) {
-    case 1: return 'aqi-good';
-    case 2: return 'aqi-fair';
-    case 3: return 'aqi-moderate';
-    case 4: return 'aqi-poor';
-    case 5: return 'aqi-very-poor';
-    default: return ''; // Default gray
-  }
+  if (aqi <= 50) return 'aqi-good';
+  if (aqi <= 100) return 'aqi-fair'; // Mapping Satisfactory to 'Fair' class
+  if (aqi <= 200) return 'aqi-moderate';
+  if (aqi <= 300) return 'aqi-poor';
+  if (aqi <= 400) return 'aqi-very-poor';
+  return 'aqi-very-poor'; // Severe maps to same or new class
 }
+
+// 4. Bar Color
 function getBarColor(percentage) {
-  if (percentage < 25) return '#28a745'; // Green
-  if (percentage < 50) return '#ffc107'; // Yellow
-  if (percentage < 75) return '#fd7e14'; // Orange
-  return '#dc3545'; // Red
+  if (percentage < 25) return '#28a745';
+  if (percentage < 50) return '#ffc107';
+  if (percentage < 75) return '#fd7e14';
+  return '#dc3545';
 }
+
+// 5. Update Recommendation Text Helper
 function updateRecommendationText() {
-  // Get the current AQI value from the gauge on the page
-  // Try new ID (SVG) first, then fallback to old ID just in safe
   const aqiEl = document.getElementById('aqi-value-text') || document.getElementById('aqi-value');
   if (!aqiEl) return;
 
   const aqi = parseInt(aqiEl.textContent, 10);
 
-  // If there's no valid AQI number, do nothing
   if (isNaN(aqi)) return;
 
-  // Generate the new recommendation using our global health variable
   const recommendation = getRecommendations(aqi, currentHealthConditions);
-
-  // Update the text on the page
   document.getElementById('recommendations-text').innerHTML = recommendation;
 }
 
-
-
-
+// 6. Detailed Recommendations based on India AQI
 function getRecommendations(aqi, healthConditions = []) {
   const isSensitive = healthConditions.length > 0;
 
@@ -369,54 +372,45 @@ function getRecommendations(aqi, healthConditions = []) {
     sensitive_donts: []
   };
 
-  switch (aqi) {
-    case 1: // Good
-      recommendations.dos.push("Enjoy outdoor activities.");
-      recommendations.dos.push("It's a great time to ventilate your home by opening windows.");
-      break;
-    case 2: // Fair
-      recommendations.dos.push("It's a good day for most outdoor activities.");
-      recommendations.sensitive_donts.push("If you have respiratory conditions, consider reducing prolonged or heavy exertion outdoors.");
-      break;
-    case 3: // Moderate
-      recommendations.dos.push("Keep an eye on the air quality if you feel symptoms.");
-      recommendations.donts.push("Don't engage in heavy outdoor exercise for long periods.");
-      recommendations.sensitive_dos.push("Stay indoors as much as possible.");
-      recommendations.sensitive_donts.push("Avoid any strenuous outdoor activities.");
-      break;
-    case 4: // Poor
-      recommendations.dos.push("Wear a high-quality mask (N95 or better) if you must go outside.");
-      recommendations.dos.push("Use an air purifier indoors if you have one.");
-      recommendations.donts.push("Avoid all non-essential outdoor activities.");
-      recommendations.donts.push("Don't exercise outdoors.");
-      recommendations.sensitive_dos.push("Keep any necessary medication (e.g., inhalers) readily available.");
-      break;
-    case 5: // Very Poor
-      recommendations.dos.push("Stay indoors with windows and doors closed.");
-      recommendations.dos.push("Run an air purifier on a high setting.");
-      recommendations.donts.push("Avoid all outdoor exertion completely.");
-      recommendations.sensitive_donts.push("Be vigilant for symptoms and seek medical advice if they worsen.");
-      break;
-    default:
-      return '<p>Check the air quality to see recommendations.</p>';
+  if (aqi <= 50) { // Good
+    recommendations.dos.push("Air quality is good. Minimal impact.");
+    recommendations.dos.push("Enjoy outdoor activities!");
+  } else if (aqi <= 100) { // Satisfactory
+    recommendations.dos.push("Minor breathing discomfort to sensitive people.");
+    recommendations.sensitive_donts.push("Reduce prolonged exertion if you feel discomfort.");
+  } else if (aqi <= 200) { // Moderate
+    recommendations.dos.push("Breathing discomfort to the people with lungs, asthma and heart diseases.");
+    recommendations.sensitive_dos.push("Keep medicine handy.");
+    recommendations.sensitive_donts.push("Avoid heavy exertion outdoors.");
+  } else if (aqi <= 300) { // Poor
+    recommendations.dos.push("Breathing discomfort to most people on prolonged exposure.");
+    recommendations.dos.push("Wear a mask if outside.");
+    recommendations.donts.push("Avoid long walks or running.");
+    recommendations.sensitive_dos.push("Stay indoors.");
+  } else if (aqi <= 400) { // Very Poor
+    recommendations.dos.push("Respiratory illness on prolonged exposure.");
+    recommendations.dos.push("Wear N95 masks.");
+    recommendations.donts.push("Avoid all outdoor exercise.");
+    recommendations.sensitive_donts.push("Remain indoors and keep activity levels low.");
+  } else { // Severe (>400)
+    recommendations.dos.push("Affects healthy people and seriously impacts those with existing diseases.");
+    recommendations.dos.push("Close windows, use air purifiers.");
+    recommendations.donts.push("Do not go outside unless emergency.");
   }
 
-  // --- Now, we build the HTML string ---
+  // Build HTML
   let html = '';
-
   if (recommendations.dos.length > 0) {
     html += '<h4>Do:</h4><ul>';
     recommendations.dos.forEach(item => { html += `<li>${item}</li>`; });
     html += '</ul>';
   }
-
   if (recommendations.donts.length > 0) {
     html += '<h4>Don\'t:</h4><ul>';
     recommendations.donts.forEach(item => { html += `<li>${item}</li>`; });
     html += '</ul>';
   }
 
-  // If the user is sensitive and there's specific advice, add a special section
   if (isSensitive && (recommendations.sensitive_dos.length > 0 || recommendations.sensitive_donts.length > 0)) {
     html += '<hr><h4>For Your Health Condition:</h4>';
     if (recommendations.sensitive_dos.length > 0) {
@@ -425,7 +419,7 @@ function getRecommendations(aqi, healthConditions = []) {
       html += '</ul>';
     }
     if (recommendations.sensitive_donts.length > 0) {
-      html += '<h5>Extra Precautions (Don\'t):</h5><ul>';
+      html += '<h5>Extra Precautions:</h5><ul>';
       recommendations.sensitive_donts.forEach(item => { html += `<li>${item}</li>`; });
       html += '</ul>';
     }
@@ -433,7 +427,6 @@ function getRecommendations(aqi, healthConditions = []) {
 
   return html;
 }
-
 
 function showError(error) { console.error('Error getting location:', error.message); }
 function urlBase64ToUint8Array(base64String) {
@@ -445,34 +438,97 @@ function urlBase64ToUint8Array(base64String) {
   return outputArray;
 }
 
-
-
-// ADD THIS NEW HELPER FUNCTION
+// 7. Mask Recommendation (New Scale)
 function getMaskRecommendation(aqi, healthConditions = []) {
   const isSensitive = healthConditions.length > 0;
   let recommendation = {
-    image: 'no-mask.png', // Default
+    image: 'no-mask.png',
     text: 'No mask needed. Enjoy the fresh air!'
   };
 
-  if (aqi === 3) { // Moderate
+  if (aqi > 100 && aqi <= 200) { // Moderate
     if (isSensitive) {
       recommendation.image = 'cloth-mask.png';
-      recommendation.text = 'A cloth or surgical mask is recommended for sensitive individuals.';
-    } else {
-      recommendation.text = 'No mask needed for the general public.';
+      recommendation.text = 'Sensitive groups should considering wearing a mask.';
     }
-  } else if (aqi === 4) { // Poor
+  } else if (aqi > 200 && aqi <= 300) { // Poor
     recommendation.image = 'n95-mask.png';
-    if (isSensitive) {
-      recommendation.text = 'A high-quality N95 or FFP2 mask is strongly recommended for you.';
-    } else {
-      recommendation.text = 'A cloth or surgical mask is recommended for prolonged outdoor activity.';
-    }
-  } else if (aqi >= 5) { // Very Poor
+    recommendation.text = isSensitive ? 'N95 mask is strongly recommended.' : 'Wear a mask for outdoor activities.';
+  } else if (aqi > 300) { // Very Poor & Severe
     recommendation.image = 'n95-mask.png';
-    recommendation.text = 'A high-quality N95 or FFP2 mask is essential for any outdoor exposure.';
+    recommendation.text = 'N95/FFP2 mask is essential. Avoid outdoors.';
   }
 
   return recommendation;
+}
+
+// --- INDIAN AQI CALCULATION HELPER ---
+
+function calculateIndianAQI(components) {
+  // CPCB Breakpoints (C_low, C_high, I_low, I_high)
+  // Format: [C_low, C_high, I_low, I_high]
+
+  const breakingPoints = {
+    pm2_5: [
+      [0, 30, 0, 50],
+      [31, 60, 51, 100],
+      [61, 90, 101, 200],
+      [91, 120, 201, 300],
+      [121, 250, 301, 400],
+      [250, 1000, 401, 500] // Catch all for severe
+    ],
+    pm10: [
+      [0, 50, 0, 50],
+      [51, 100, 51, 100],
+      [101, 250, 101, 200],
+      [251, 350, 201, 300],
+      [351, 430, 301, 400],
+      [430, 1000, 401, 500]
+    ],
+    so2: [
+      [0, 40, 0, 50],
+      [41, 80, 51, 100],
+      [81, 380, 101, 200],
+      [381, 800, 201, 300],
+      [801, 1600, 301, 400],
+      [1600, 5000, 401, 500]
+    ],
+    no2: [
+      [0, 40, 0, 50],
+      [41, 80, 51, 100],
+      [81, 180, 101, 200],
+      [181, 280, 201, 300],
+      [281, 400, 301, 400],
+      [400, 1000, 401, 500]
+    ]
+  };
+
+  const calculateSubIndex = (concentration, param) => {
+    if (concentration === undefined || concentration === null) return 0;
+
+    const ranges = breakingPoints[param];
+    if (!ranges) return 0;
+
+    // Find range
+    for (let i = 0; i < ranges.length; i++) {
+      const [cLo, cHi, iLo, iHi] = ranges[i];
+      if (concentration <= cHi) {
+        // Formula: Ip = [ (IHi - ILo) / (CHi - CLo) ] * (Cp - CLo) + ILo
+        return Math.round(((iHi - iLo) / (cHi - cLo)) * (concentration - cLo) + iLo);
+      }
+    }
+    // If exceeds max known range, use last range linear projection or cap
+    const [cLo, cHi, iLo, iHi] = ranges[ranges.length - 1];
+    return Math.round(((iHi - iLo) / (cHi - cLo)) * (concentration - cLo) + iLo);
+  };
+
+  const subIndices = [
+    calculateSubIndex(components.pm2_5, 'pm2_5'),
+    calculateSubIndex(components.pm10, 'pm10'),
+    calculateSubIndex(components.so2, 'so2'),
+    calculateSubIndex(components.no2, 'no2')
+  ];
+
+  // Final AQI is the max of all sub-indices
+  return Math.max(...subIndices);
 }
