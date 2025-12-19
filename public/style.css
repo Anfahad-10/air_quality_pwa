@@ -314,41 +314,38 @@ body {
   /* Allow needle to shadow or whatever */
 }
 
-.gauge-arc-segment {
-  stroke-linecap: round;
+.gauge-segment {
+  /* stroke-linecap: round;  <-- Removing round caps for seamless look requested by user */
   transition: opacity 0.3s;
 }
 
 /* Needle Logic */
 .needle-group {
+  /* Pivot is at 100,100. */
   transform-origin: 100px 100px;
   transform: rotate(0deg);
-  /* Start at 0 (left-most position: 180deg? No, let JS handle it) */
   transition: transform 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* Gauge Info section below SVG */
 .gauge-info {
   text-align: center;
-  margin-top: -10px;
-  /* Slight overlap with SVG bottom nicely */
+  margin-top: 0;
   z-index: 2;
 }
 
-.aqi-display {
-  display: block;
-  font-size: 48px;
+.aqi-svg-text {
+  font-size: 36px;
   font-weight: 800;
-  color: var(--text-dark);
-  line-height: 1;
-  margin-bottom: 8px;
+  fill: var(--text-dark);
+  font-family: var(--font-main);
 }
 
 .status-text {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
   color: var(--text-dark);
-  margin: 0;
+  margin: 5px 0 0 0;
 }
 
 /* =========================================

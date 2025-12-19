@@ -182,7 +182,9 @@ function fetchAirQualityFromServer(location) {
         const resultContainer = document.getElementById('result-container');
 
         // Update Gauge
-        document.getElementById('aqi-value').textContent = aqi;
+        const aqiTextEl = document.getElementById('aqi-value-text') || document.getElementById('aqi-value');
+        if (aqiTextEl) aqiTextEl.textContent = aqi;
+
         document.getElementById('aqi-meaning').textContent = meaning;
 
         // Update needle rotation (SVG group)
