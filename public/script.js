@@ -91,8 +91,8 @@ function handleLocationSuccess(position) {
 // Decides whether to subscribe a new user or update an existing one
 function handleSubscription() {
   // We only proceed if we have a location
-  if (!currentLocation) return; 
-  
+  if (!currentLocation) return;
+
   if (currentSubscription) {
     console.log('User already subscribed. Updating server with latest info.');
     sendSubscriptionToServer(currentSubscription, currentLocation);
@@ -127,7 +127,7 @@ async function subscribeUserToPush() {
 
     currentSubscription = await registration.pushManager.subscribe(subscribeOptions);
     console.log('User subscribed successfully.');
-    
+
     // Now send the new subscription to the server
     sendSubscriptionToServer(currentSubscription, currentLocation);
   } catch (err) {
@@ -177,23 +177,29 @@ function fetchAirQualityFromServer(location) {
         const rotationAngle = getAqiRotation(aqi);
         const selectedConditions = [];
 
-        const recommendation = getRecommendations(aqi, []);   
+        const recommendation = getRecommendations(aqi, []);
         const colorClass = getAqiColorClass(aqi);
         const resultContainer = document.getElementById('result-container');
 
         // Update Gauge
         document.getElementById('aqi-value').textContent = aqi;
         document.getElementById('aqi-meaning').textContent = meaning;
-        document.getElementById('gauge-needle').style.transform = `rotate(${rotationAngle}deg)`;
+
+        // Update needle rotation (SVG group)
+        const needleGroup = document.getElementById('needle-group');
+        if (needleGroup) {
+          needleGroup.style.transform = `rotate(${rotationAngle}deg)`;
+        }
+
         document.getElementById('mask-image').src = maskRec.image;
         document.getElementById('mask-text').textContent = maskRec.text;
         // Populate Pollutant Bars
         updatePollutantBars(components);
-        
+
         // Populate Recommendations Box
         document.getElementById('recommendations-text').innerHTML = recommendation;
-        
-        
+
+
         // Apply dynamic class for coloring
         resultContainer.className = '';
         resultContainer.classList.add(colorClass);
@@ -218,9 +224,9 @@ function sendSubscriptionToServer(subscription, location) {
     body: JSON.stringify({ subscription, location, frequency, healthConditions }),
     headers: { 'Content-Type': 'application/json' }
   })
-  .then(res => res.json())
-  .then(data => console.log('Server response:', data.message))
-  .catch(err => console.error('Error sending data to server:', err));
+    .then(res => res.json())
+    .then(data => console.log('Server response:', data.message))
+    .catch(err => console.error('Error sending data to server:', err));
 }
 
 
@@ -228,7 +234,7 @@ function sendSubscriptionToServer(subscription, location) {
 
 function updatePollutantBars(components) {
   const pollutantContainer = document.getElementById('pollutant-data-container');
-  pollutantContainer.innerHTML = ''; 
+  pollutantContainer.innerHTML = '';
 
   const pollutantsToShow = [
     { name: 'PM2.5', key: 'pm2_5', max: 75 },
@@ -269,7 +275,7 @@ function setupHealthModal() {
     //localStorage.setItem('hasAnsweredHealthQuestion', 'true');
     //localStorage.setItem('healthConditions', JSON.stringify([]));
     currentHealthConditions = [];
-    updateRecommendationText();  
+    updateRecommendationText();
     hideHealthModal();
   });
   document.getElementById('condition-yes-btn').addEventListener('click', () => {
@@ -283,7 +289,7 @@ function setupHealthModal() {
     //localStorage.setItem('healthConditions', JSON.stringify(selectedConditions));
     //localStorage.setItem('hasAnsweredHealthQuestion', 'true');
     currentHealthConditions = selectedConditions;
-    updateRecommendationText(); 
+    updateRecommendationText();
     hideHealthModal();
   });
 }
@@ -300,14 +306,14 @@ function setupBubblyButton() {
 function getAqiRotation(aqi) {
   const minAngle = 0;
   const maxAngle = 180;
-  
+
   const aqiMin = 1;
   const aqiMax = 5;
-  
+
   const anglePerAqiUnit = maxAngle / (aqiMax - aqiMin);
-  
+
   const adjustedAqi = aqi - aqiMin;
-  
+
   const angle = (adjustedAqi * anglePerAqiUnit) + (anglePerAqiUnit / 2);
 
   return Math.min(maxAngle, Math.max(minAngle, angle));
@@ -341,13 +347,13 @@ function getBarColor(percentage) {
 function updateRecommendationText() {
   // Get the current AQI value from the gauge on the page
   const aqi = parseInt(document.getElementById('aqi-value').innerHTML, 10);
-  
+
   // If there's no valid AQI number, do nothing
-  if (isNaN(aqi)) return; 
+  if (isNaN(aqi)) return;
 
   // Generate the new recommendation using our global health variable
   const recommendation = getRecommendations(aqi, currentHealthConditions);
-  
+
   // Update the text on the page
   document.getElementById('recommendations-text').innerHTML = recommendation;
 }
@@ -357,7 +363,7 @@ function updateRecommendationText() {
 
 function getRecommendations(aqi, healthConditions = []) {
   const isSensitive = healthConditions.length > 0;
-  
+
   let recommendations = {
     dos: [],
     donts: [],
@@ -411,7 +417,7 @@ function getRecommendations(aqi, healthConditions = []) {
     recommendations.donts.forEach(item => { html += `<li>${item}</li>`; });
     html += '</ul>';
   }
-  
+
   // If the user is sensitive and there's specific advice, add a special section
   if (isSensitive && (recommendations.sensitive_dos.length > 0 || recommendations.sensitive_donts.length > 0)) {
     html += '<hr><h4>For Your Health Condition:</h4>';

@@ -1,643 +1,675 @@
 /* =========================================
    1. VARIABLES & RESET
    ========================================= */
-   :root {
-    --font-main: 'Inter', sans-serif;
-    --font-heading: 'Poppins', sans-serif;
-  
-    /* Modern Palette */
-    --primary-color: #4f46e5;      /* Indigo 600 */
-    --primary-hover: #4338ca;      /* Indigo 700 */
-    --secondary-color: #64748b;    /* Slate 500 */
-    --accent-color: #06b6d4;       /* Cyan 500 */
-    --success-color: #10b981;      /* Emerald 500 */
-    --warning-color: #f59e0b;      /* Amber 500 */
-    --danger-color: #ef4444;       /* Red 500 */
-    
-    --text-dark: #1e293b;          /* Slate 800 */
-    --text-medium: #475569;        /* Slate 600 */
-    --text-light: #94a3b8;         /* Slate 400 */
-    
-    --bg-gradient-start: #0f172a;  /* Slate 900 */
-    --bg-gradient-end: #1e1b4b;    /* Indigo 950 */
-    
-    --glass-bg: rgba(255, 255, 255, 0.95);
-    --glass-border: rgba(255, 255, 255, 0.2);
-    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-  }
-  
-  *, *::before, *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-  
-  body {
-    font-family: var(--font-main);
-    background-color: var(--bg-gradient-start);
-    color: var(--text-dark);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    overflow-x: hidden;
-  }
-  
-  /* =========================================
+:root {
+  --font-main: 'Inter', sans-serif;
+  --font-heading: 'Poppins', sans-serif;
+
+  /* Modern Palette */
+  --primary-color: #4f46e5;
+  /* Indigo 600 */
+  --primary-hover: #4338ca;
+  /* Indigo 700 */
+  --secondary-color: #64748b;
+  /* Slate 500 */
+  --accent-color: #06b6d4;
+  /* Cyan 500 */
+  --success-color: #10b981;
+  /* Emerald 500 */
+  --warning-color: #f59e0b;
+  /* Amber 500 */
+  --danger-color: #ef4444;
+  /* Red 500 */
+
+  --text-dark: #1e293b;
+  /* Slate 800 */
+  --text-medium: #475569;
+  /* Slate 600 */
+  --text-light: #94a3b8;
+  /* Slate 400 */
+
+  --bg-gradient-start: #0f172a;
+  /* Slate 900 */
+  --bg-gradient-end: #1e1b4b;
+  /* Indigo 950 */
+
+  --glass-bg: rgba(255, 255, 255, 0.95);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-gradient-start);
+  color: var(--text-dark);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  overflow-x: hidden;
+}
+
+/* =========================================
      2. BACKGROUND & LAYOUT
      ========================================= */
-  .background-gradient {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at 50% 10%, #4f46e5 0%, transparent 50%),
-                radial-gradient(circle at 90% 90%, #06b6d4 0%, transparent 50%),
-                radial-gradient(circle at 10% 80%, #ec4899 0%, transparent 40%),
-                var(--bg-gradient-start);
-    z-index: -1;
-    filter: blur(40px);
-    opacity: 0.8;
-    animation: pulseBg 15s ease infinite alternate;
+.background-gradient {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 10%, #4f46e5 0%, transparent 50%),
+    radial-gradient(circle at 90% 90%, #06b6d4 0%, transparent 50%),
+    radial-gradient(circle at 10% 80%, #ec4899 0%, transparent 40%),
+    var(--bg-gradient-start);
+  z-index: -1;
+  filter: blur(40px);
+  opacity: 0.8;
+  animation: pulseBg 15s ease infinite alternate;
+}
+
+@keyframes pulseBg {
+  0% {
+    transform: scale(1);
   }
-  
-  @keyframes pulseBg {
-    0% { transform: scale(1); }
-    100% { transform: scale(1.1); }
+
+  100% {
+    transform: scale(1.1);
   }
-  
-  .main-wrapper {
-    width: 100%;
-    max-width: 480px;
-    perspective: 1000px;
-  }
-  
-  .app-container {
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-shadow);
-    border-radius: 24px;
-    padding: 32px 24px;
-    text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    width: 100%;
-  }
-  
-  .app-container:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
-  }
-  
-  /* =========================================
+}
+
+.main-wrapper {
+  width: 100%;
+  max-width: 480px;
+  perspective: 1000px;
+}
+
+.app-container {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 24px;
+  padding: 32px 24px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+}
+
+.app-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* =========================================
      3. HEADER & TYPOGRAPHY
      ========================================= */
-  .app-header {
-    margin-bottom: 32px;
+.app-header {
+  margin-bottom: 32px;
+}
+
+.app-title {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.emoji {
+  font-size: 24px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
   }
-  
-  .app-title {
-    font-family: var(--font-heading);
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--text-dark);
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+
+  50% {
+    transform: translateY(-5px);
   }
-  
-  .emoji {
-    font-size: 24px;
-    animation: float 3s ease-in-out infinite;
-  }
-  
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
-  }
-  
-  .app-subtitle {
-    font-size: 14px;
-    color: var(--text-medium);
-    font-weight: 400;
-  }
-  
-  /* =========================================
+}
+
+.app-subtitle {
+  font-size: 14px;
+  color: var(--text-medium);
+  font-weight: 400;
+}
+
+/* =========================================
      4. SEARCH & INPUTS
      ========================================= */
-  .search-section {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-  
-  .search-bar {
-    position: relative;
-    display: flex; /* Ensure button and input are side-by-side if needed, but styling input wrapper */
-    align-items: center;
-  }
-  
-  #city-input {
-    width: 100%;
-    padding: 16px 50px 16px 20px;
-    border: 2px solid transparent;
-    border-radius: 16px;
-    background-color: #f1f5f9;
-    font-family: var(--font-main);
-    font-size: 16px;
-    color: var(--text-dark);
-    transition: all 0.3s ease;
-    outline: none;
-  }
-  
-  #city-input:focus {
-    background-color: #ffffff;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
-  }
-  
-  .icon-btn {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-  }
-  
-  .icon-btn:hover {
-    background: var(--primary-hover);
-    transform: translateY(-50%) scale(1.05);
-  }
-  
-  .divider {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    color: var(--text-light);
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin: 0 10px;
-  }
-  .divider::before, .divider::after {
-    content: '';
-    flex: 1;
-    border-bottom: 1px solid #e2e8f0;
-  }
-  .divider span {
-    padding: 0 10px;
-  }
-  
-  .location-btn {
-    width: 100%;
-    padding: 14px;
-    border-radius: 16px;
-    border: none;
-    font-family: var(--font-main);
-    font-weight: 600;
-    font-size: 16px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    background: white;
-    color: var(--primary-color);
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    transition: all 0.2s ease;
-  }
-  
-  .location-btn:hover {
-    background: #f8fafc;
-    border-color: var(--primary-color);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  }
-  
-  /* =========================================
+.search-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.search-bar {
+  position: relative;
+  display: flex;
+  /* Ensure button and input are side-by-side if needed, but styling input wrapper */
+  align-items: center;
+}
+
+#city-input {
+  width: 100%;
+  padding: 16px 50px 16px 20px;
+  border: 2px solid transparent;
+  border-radius: 16px;
+  background-color: #f1f5f9;
+  font-family: var(--font-main);
+  font-size: 16px;
+  color: var(--text-dark);
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+#city-input:focus {
+  background-color: #ffffff;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+.icon-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.icon-btn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-50%) scale(1.05);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: var(--text-light);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 10px;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.divider span {
+  padding: 0 10px;
+}
+
+.location-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 16px;
+  border: none;
+  font-family: var(--font-main);
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: white;
+  color: var(--primary-color);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.location-btn:hover {
+  background: #f8fafc;
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* =========================================
      5. RESULTS & GAUGE
      ========================================= */
-  .hidden-initially {
-    display: none; /* JS will remove hidden property or opacity */
+.hidden-initially {
+  display: none;
+  /* JS will remove hidden property or opacity */
+}
+
+#result-container {
+  opacity: 1;
+  /* Override old CSS if needed, or JS will handle display */
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  #result-container {
-    opacity: 1; /* Override old CSS if needed, or JS will handle display */
-    animation: fadeInUp 0.5s ease-out forwards;
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  
-  .aqi-card {
-    margin-bottom: 24px;
-  }
-  
-  .aqi-card h2 {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--text-medium);
-    margin-bottom: 20px;
-  }
-  
-  /* Gauge Styles */
-  .gauge-wrapper {
-    position: relative;
-    width: 220px;
-    height: 110px;
-    margin: 0 auto 16px auto;
-  }
-  
-  .gauge-container {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-  }
-  
-  .gauge-body {
-    width: 100%;
-    height: 200%; /* Circle is twice the height */
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-  
-  .gauge-arc {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background: conic-gradient(
-      from -90deg,
-      #10b981 0deg,      /* Good - Green */
-      #10b981 36deg,     
-      #facc15 36deg,     /* Fair - Yellow */
-      #facc15 72deg,     
-      #f97316 72deg,     /* Moderate - Orange */
-      #f97316 108deg,    
-      #ef4444 108deg,    /* Poor - Red */
-      #ef4444 144deg,
-      #a855f7 144deg,    /* Very Poor - Purple */
-      #a855f7 180deg
-    );
-    mask: radial-gradient(transparent 65%, black 66%);
-    -webkit-mask: radial-gradient(transparent 65%, black 66%);
-  }
-  
-  .gauge-needle {
-    position: absolute;
-    bottom: 50%;
-    left: 50%;
-    width: 45%; 
-    height: 4px;
-    background: var(--text-dark);
-    border-radius: 4px;
-    transform-origin: left center;
-    transform: rotate(0deg); 
-    /* The JS sets rotation. -90deg is start? No, original CSS had different transform.
-       Original JS logic:
-         - getAqiRotation(aqi) returns angle 0 to 180.
-         - Original CSS: transform: translateX(-80px) rotate(0deg); with origin 100% 50%.
-       
-       Let's stick to the center pivot logic.
-       If needle is width 45%, origin should be left center (if placed at center) 
-       or right center (if placed at left).
-       
-       Let's Replicate Original Logic somewhat but cleaner.
-       Original Needle: width 80px, left 50%, transform: translateX(-80px). Origin 100% 50%.
-       This means pivot is at the right end of the needle.
-    */
-    width: 50%;
-    left: 0;
-    transform-origin: right center; /* Rotate around the right tip (center of gauge) */
-    transform: rotate(0deg);
-    transition: transform 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  
-  .gauge-anchor {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 16px;
-    height: 16px;
-    background: var(--text-dark);
-    border-radius: 50%;
-    z-index: 5;
-  }
-  
-  .gauge-center {
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-  }
-  
-  #aqi-value {
-    font-size: 48px;
-    font-weight: 800;
-    color: var(--text-dark);
-    line-height: 1;
-  }
-  
-  .status-text {
-    font-size: 20px;
-    font-weight: 600;
-    margin-top: 10px;
-    color: var(--text-dark);
-  }
-  
-  /* =========================================
+}
+
+.aqi-card {
+  margin-bottom: 24px;
+}
+
+.aqi-card h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-medium);
+  margin-bottom: 20px;
+}
+
+/* Gauge Styles */
+/* Gauge Styles - SVG Implementation */
+.gauge-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  /* Ensure no content overlaps below */
+  margin-bottom: 24px;
+}
+
+.gauge-svg {
+  width: 220px;
+  height: 110px;
+  overflow: visible;
+  /* Allow needle to shadow or whatever */
+}
+
+.gauge-arc-segment {
+  stroke-linecap: round;
+  transition: opacity 0.3s;
+}
+
+/* Needle Logic */
+.needle-group {
+  transform-origin: 100px 100px;
+  transform: rotate(0deg);
+  /* Start at 0 (left-most position: 180deg? No, let JS handle it) */
+  transition: transform 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Gauge Info section below SVG */
+.gauge-info {
+  text-align: center;
+  margin-top: -10px;
+  /* Slight overlap with SVG bottom nicely */
+  z-index: 2;
+}
+
+.aqi-display {
+  display: block;
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--text-dark);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.status-text {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+/* =========================================
      6. CARDS & SECTIONS
      ========================================= */
-  .grid-layout {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-  
-  .info-card {
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-    border: 1px solid #f1f5f9;
-    text-align: left;
-    transition: transform 0.2s ease;
-  }
-  
-  .info-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-  }
-  
-  /* Pollutants */
-  #pollutant-data-container {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  
-  .pollutant-item {
-    width: 100%;
-  }
-  
-  .pollutant-info {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 6px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-data);
-  }
-  
-  .bar-container {
-    width: 100%;
-    height: 8px;
-    background-color: #f1f5f9;
-    border-radius: 10px;
-    overflow: hidden;
-  }
-  
-  .bar {
-    height: 100%;
-    border-radius: 10px;
-    transition: width 1s ease-out;
-  }
-  
-  /* Mask Card */
-  #mask-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-  
-  .card-header h3 {
-    font-size: 16px;
-    color: var(--text-medium);
-    margin-bottom: 12px;
-    font-weight: 600;
-  }
-  
-  .mask-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-  }
-  
-  #mask-image {
-    width: 64px;
-    height: 64px;
-    object-fit: contain;
-  }
-  
-  #mask-text {
-    font-size: 14px;
-    color: var(--text-dark);
-    font-weight: 500;
-  }
-  
-  /* Recommendations */
-  .full-width {
-    grid-column: 1 / -1;
-  }
-  
-  #recommendations-box h3 {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text-medium);
-    margin-bottom: 16px;
-  }
-  
-  #recommendations-box ul {
-    padding-left: 20px;
-    margin-bottom: 10px;
-  }
-  
-  #recommendations-box li {
-    font-size: 14px;
-    color: var(--text-medium);
-    margin-bottom: 8px;
-    line-height: 1.5;
-  }
-  
-  #recommendations-box h4 {
-    font-size: 14px;
-    color: var(--text-dark);
-    margin: 12px 0 8px 0;
-  }
-  
-  /* AQI Color Themes for Recommendations Box */
-  .aqi-good .recommendation-card { border-left: 5px solid #10b981; }
-  .aqi-fair .recommendation-card { border-left: 5px solid #facc15; }
-  .aqi-moderate .recommendation-card { border-left: 5px solid #f97316; }
-  .aqi-poor .recommendation-card { border-left: 5px solid #ef4444; }
-  .aqi-very-poor .recommendation-card { border-left: 5px solid #a855f7; }
-  
-  
-  /* =========================================
+.grid-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.info-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  border: 1px solid #f1f5f9;
+  text-align: left;
+  transition: transform 0.2s ease;
+}
+
+.info-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+}
+
+/* Pollutants */
+#pollutant-data-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pollutant-item {
+  width: 100%;
+}
+
+.pollutant-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-data);
+}
+
+.bar-container {
+  width: 100%;
+  height: 8px;
+  background-color: #f1f5f9;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 1s ease-out;
+}
+
+/* Mask Card */
+#mask-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.card-header h3 {
+  font-size: 16px;
+  color: var(--text-medium);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.mask-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+#mask-image {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+#mask-text {
+  font-size: 14px;
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
+/* Recommendations */
+.full-width {
+  grid-column: 1 / -1;
+}
+
+#recommendations-box h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-medium);
+  margin-bottom: 16px;
+}
+
+#recommendations-box ul {
+  padding-left: 20px;
+  margin-bottom: 10px;
+}
+
+#recommendations-box li {
+  font-size: 14px;
+  color: var(--text-medium);
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+#recommendations-box h4 {
+  font-size: 14px;
+  color: var(--text-dark);
+  margin: 12px 0 8px 0;
+}
+
+/* AQI Color Themes for Recommendations Box */
+.aqi-good .recommendation-card {
+  border-left: 5px solid #10b981;
+}
+
+.aqi-fair .recommendation-card {
+  border-left: 5px solid #facc15;
+}
+
+.aqi-moderate .recommendation-card {
+  border-left: 5px solid #f97316;
+}
+
+.aqi-poor .recommendation-card {
+  border-left: 5px solid #ef4444;
+}
+
+.aqi-very-poor .recommendation-card {
+  border-left: 5px solid #a855f7;
+}
+
+
+/* =========================================
      7. MODAL styles
      ========================================= */
-  .modal-overlay {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(5px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-    opacity: 1;
-    transition: all 0.3s ease;
-  }
-  
-  .modal-overlay.hidden {
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+.modal-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.modal-card {
+  background: white;
+  width: 90%;
+  max-width: 400px;
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  transform: scale(1);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hidden .modal-card {
+  transform: scale(0.9);
+}
+
+.modal-header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--text-dark);
+}
+
+.modal-question {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+}
+
+.modal-helper {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-bottom: 24px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+}
+
+.btn-secondary {
+  background: #f1f5f9;
+  color: var(--text-medium);
+}
+
+.btn-secondary:hover {
+  background: #e2e8f0;
+}
+
+.btn-success {
+  background: var(--success-color);
+  color: white;
+  margin-top: 16px;
+}
+
+.btn-success:hover {
+  background: #059669;
+}
+
+/* Checkbox Custom Styles */
+.checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px;
+  border: 1px solid #f1f5f9;
+  border-radius: 10px;
+  transition: border-color 0.2s;
+}
+
+.checkbox-item:hover {
+  border-color: var(--primary-color);
+}
+
+.checkbox-item input {
+  display: none;
+}
+
+.custom-check {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #cbd5e1;
+  border-radius: 6px;
+  margin-right: 12px;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.checkbox-item input:checked+.custom-check {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.checkbox-item input:checked+.custom-check::after {
+  content: '✔';
+  color: white;
+  font-size: 12px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.label-text {
+  font-size: 14px;
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
+.conditions-expandable.visible {
+  animation: expandHeight 0.4s ease forwards;
+}
+
+@keyframes expandHeight {
+  from {
     opacity: 0;
-    pointer-events: none;
+    max-height: 0;
+    transform: translateY(-10px);
   }
-  
-  .modal-card {
-    background: white;
-    width: 90%;
-    max-width: 400px;
-    border-radius: 20px;
-    padding: 32px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    transform: scale(1);
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  to {
+    opacity: 1;
+    max-height: 400px;
+    transform: translateY(0);
   }
-  
-  .hidden .modal-card {
-    transform: scale(0.9);
-  }
-  
-  .modal-header h2 {
-    font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 16px;
-    color: var(--text-dark);
-  }
-  
-  .modal-question {
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--text-dark);
-    margin-bottom: 8px;
-  }
-  
-  .modal-helper {
-    font-size: 13px;
-    color: var(--text-light);
-    margin-bottom: 24px;
-  }
-  
-  .modal-actions {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-  
-  .btn {
-    flex: 1;
-    padding: 12px;
-    border-radius: 12px;
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  
-  .btn-primary { background: var(--primary-color); color: white; }
-  .btn-primary:hover { background: var(--primary-hover); }
-  
-  .btn-secondary { background: #f1f5f9; color: var(--text-medium); }
-  .btn-secondary:hover { background: #e2e8f0; }
-  
-  .btn-success { background: var(--success-color); color: white; margin-top: 16px; }
-  .btn-success:hover { background: #059669; }
-  
-  /* Checkbox Custom Styles */
-  .checkbox-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    text-align: left;
-  }
-  
-  .checkbox-item {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    padding: 10px;
-    border: 1px solid #f1f5f9;
-    border-radius: 10px;
-    transition: border-color 0.2s;
-  }
-  
-  .checkbox-item:hover {
-    border-color: var(--primary-color);
-  }
-  
-  .checkbox-item input {
-    display: none;
-  }
-  
-  .custom-check {
-    width: 20px;
-    height: 20px;
-    border: 2px solid #cbd5e1;
-    border-radius: 6px;
-    margin-right: 12px;
-    position: relative;
-    transition: all 0.2s;
-  }
-  
-  .checkbox-item input:checked + .custom-check {
-    background: var(--primary-color);
-    border-color: var(--primary-color);
-  }
-  
-  .checkbox-item input:checked + .custom-check::after {
-    content: '✔';
-    color: white;
-    font-size: 12px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-  
-  .label-text {
-    font-size: 14px;
-    color: var(--text-dark);
-    font-weight: 500;
-  }
-  
-  .conditions-expandable.visible {
-    animation: expandHeight 0.4s ease forwards;
-  }
-  
-  @keyframes expandHeight {
-    from { opacity: 0; max-height: 0; transform: translateY(-10px); }
-    to { opacity: 1; max-height: 400px; transform: translateY(0); }
-  }
+}
