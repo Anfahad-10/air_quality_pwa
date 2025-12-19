@@ -62,45 +62,34 @@
           <h2>Air Quality Index</h2>
 
           <div class="gauge-section">
-            <svg class="gauge-svg" viewBox="0 0 200 100">
-              <!-- Gradients or Solid Colors for Arc -->
+            <svg class="gauge-svg" viewBox="0 0 200 135">
               <defs>
-                <linearGradient id="grad-good" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
-                  <stop offset="100%" style="stop-color:#10b981;stop-opacity:1" />
+                <linearGradient id="meter-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" style="stop-color:#22c55e" /> <!-- Green -->
+                  <stop offset="25%" style="stop-color:#eab308" /> <!-- Yellow -->
+                  <stop offset="50%" style="stop-color:#f97316" /> <!-- Orange -->
+                  <stop offset="75%" style="stop-color:#ef4444" /> <!-- Red -->
+                  <stop offset="100%" style="stop-color:#7f1d1d" /> <!-- Maroon -->
                 </linearGradient>
               </defs>
 
-              <!-- Arc Segments (Strokes) -->
-              <!-- 1. Good (Green) -->
-              <path class="gauge-arc-segment" stroke="#10b981" d="M 20 100 A 80 80 0 0 1 44.7 69.1" fill="none"
-                stroke-width="12" />
-              <!-- 2. Fair (Yellow) -->
-              <path class="gauge-arc-segment" stroke="#facc15" d="M 46.5 66.8 A 80 80 0 0 1 83.3 21.7" fill="none"
-                stroke-width="12" />
-              <!-- 3. Moderate (Orange) -->
-              <path class="gauge-arc-segment" stroke="#f97316" d="M 85.6 20.8 A 80 80 0 0 1 114.4 20.8" fill="none"
-                stroke-width="12" />
-              <!-- 4. Poor (Red) -->
-              <path class="gauge-arc-segment" stroke="#ef4444" d="M 116.7 21.7 A 80 80 0 0 1 153.5 66.8" fill="none"
-                stroke-width="12" />
-              <!-- 5. Very Poor (Purple) -->
-              <path class="gauge-arc-segment" stroke="#a855f7" d="M 155.3 69.1 A 80 80 0 0 1 180 100" fill="none"
-                stroke-width="12" />
+              <!-- Single Continuous Semicircle Arc -->
+              <path class="gauge-arc" fill="none" stroke="url(#meter-gradient)" stroke-width="18" stroke-linecap="round"
+                d="M 20 100 A 80 80 0 0 1 180 100" />
 
-              <!-- Needle group -->
+              <!-- Value Text BELOW the pivot (Speedometer style) -->
+              <text x="100" y="130" text-anchor="middle" id="aqi-value-text" class="aqi-svg-text">--</text>
+
+              <!-- Needle Group (Pivot at 100,100) -->
               <g id="needle-group" class="needle-group">
+                <!-- Needle body -->
+                <path d="M 100 100 L 25 100 L 100 104 L 100 100 Z" fill="#1e293b" />
                 <circle cx="100" cy="100" r="6" fill="#1e293b" />
-                <path d="M 100 100 L 70 100 L 100 5 L 130 100 Z" fill="#1e293b"
-                  transform="scale(0.15) translate(230, -560)" style="display:none;" />
-                <!-- Complex needle shape if wanted, but using simple line is safer -->
-                <rect x="100" y="100" width="70" height="4" fill="#1e293b" rx="2"
-                  transform="translate(0, -2) rotate(180, 100, 100)" />
               </g>
             </svg>
 
             <div class="gauge-info">
-              <span id="aqi-value" class="aqi-display">--</span>
+              <!-- Text now inside SVG, just keeping status here -->
               <p id="aqi-meaning" class="status-text">Ready to measure</p>
             </div>
           </div>

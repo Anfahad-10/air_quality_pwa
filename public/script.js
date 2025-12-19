@@ -306,20 +306,12 @@ function setupBubblyButton() {
 
 // --- Other Helper Functions ---
 function getAqiRotation(aqi) {
-  const minAngle = 0;
-  const maxAngle = 180;
-
-  const aqiMin = 1;
-  const aqiMax = 5;
-
-  const anglePerAqiUnit = maxAngle / (aqiMax - aqiMin);
-
-  const adjustedAqi = aqi - aqiMin;
-
-  const angle = (adjustedAqi * anglePerAqiUnit) + (anglePerAqiUnit / 2);
-
-  return Math.min(maxAngle, Math.max(minAngle, angle));
+  // Map AQI 1-5 to 5 equal 36-degree zones (Total 180 degrees)
+  // Centers: 18, 54, 90, 126, 162
+  const zoneSize = 180 / 5;
+  return ((aqi - 1) * zoneSize) + (zoneSize / 2);
 }
+
 function getAqiMeaning(aqi) {
   switch (aqi) {
     case 1: return 'Good 😍';

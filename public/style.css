@@ -308,10 +308,10 @@ body {
 }
 
 .gauge-svg {
-  width: 220px;
-  height: 110px;
+  width: 250px;
+  /* Slightly larger to look good */
+  height: auto;
   overflow: visible;
-  /* Allow needle to shadow or whatever */
 }
 
 .gauge-segment {
