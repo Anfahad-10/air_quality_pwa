@@ -340,7 +340,11 @@ function getBarColor(percentage) {
 }
 function updateRecommendationText() {
   // Get the current AQI value from the gauge on the page
-  const aqi = parseInt(document.getElementById('aqi-value').innerHTML, 10);
+  // Try new ID (SVG) first, then fallback to old ID just in safe
+  const aqiEl = document.getElementById('aqi-value-text') || document.getElementById('aqi-value');
+  if (!aqiEl) return;
+
+  const aqi = parseInt(aqiEl.textContent, 10);
 
   // If there's no valid AQI number, do nothing
   if (isNaN(aqi)) return;
